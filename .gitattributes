@@ -2,6 +2,10 @@
 
 *.bat            text eol=crlf
 gradlew          text eol=lf
+# The executable bit on gradlew is carried by the index mode, not by .gitattributes.
+# It was missing for the repository's first thirteen commits — the file was created on
+# Windows, which has no such bit — and every CI run failed at its first Gradle step with
+# "Permission denied". Set with: git update-index --chmod=+x gradlew
 *.sh             text eol=lf
 
 *.png            binary
