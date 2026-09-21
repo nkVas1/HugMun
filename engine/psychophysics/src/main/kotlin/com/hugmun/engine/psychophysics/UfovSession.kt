@@ -83,6 +83,7 @@ public class UfovSession(
             thresholdFrames = threshold.frames,
             thresholdMillis = threshold.millis(timing),
             isFloorLimited = threshold.isFloorLimited(staircase.config),
+            isCeilingLimited = threshold.isCeilingLimited(staircase.config),
             reversalsUsed = threshold.reversalsUsed,
             scoredTrials = scored,
             correctTrials = correct,
@@ -184,6 +185,8 @@ public data class UfovSessionResult(
     public val thresholdMillis: Double,
     /** True when the estimate sits in the display's bottom quantisation bin. */
     public val isFloorLimited: Boolean,
+    /** True when the estimate sits against the top of the staircase's range. */
+    public val isCeilingLimited: Boolean,
     public val reversalsUsed: Int,
     public val scoredTrials: Int,
     public val correctTrials: Int,
@@ -206,7 +209,93 @@ public data class UfovSessionResult(
             return discardedTrials.toDouble() / total <= MAX_DISCARD_FRACTION
         }
 
+    /**
+     * Whether performance was distinguishable from guessing.
+     *
+     * The dual task is a two-alternative central choice crossed with an eight-alternative
+     * peripheral one, so pure guessing is correct one time in sixteen. If the session's
+     * hit rate is not significantly above that, the staircase was not tracking anything
+     * and its output is the ceiling of the range, not a threshold.
+     */
+    public val chanceProbability: Double
+        get() = BinomialTest.upperTailProbability(
+            successes = correctTrials,
+            trials = scoredTrials,
+            probability = GUESS_RATE,
+        )
+
+    public val isAboveChance: Boolean get() = chanceProbability < CHANCE_ALPHA
+
+    /**
+     * What, if anything, this session is allowed to claim.
+     *
+     * Ordered by severity: a session can be several kinds of broken at once, and the
+     * user is told about the one that most undermines the number.
+     */
+    public val validity: ThresholdValidity
+        get() = when {
+            !isAboveChance -> ThresholdValidity.AT_CHANCE
+            !isQualityAcceptable -> ThresholdValidity.DISPLAY_UNRELIABLE
+            isCeilingLimited -> ThresholdValidity.CEILING_LIMITED
+            else -> ThresholdValidity.USABLE
+        }
+
     public companion object {
         public const val MAX_DISCARD_FRACTION: Double = 0.20
+
+        /**
+         * Correct-by-chance rate for the dual task: 1/2 on the central figure times 1/8
+         * on the peripheral direction. Derived from the alternatives rather than written
+         * as a literal, so it cannot drift away from the task if either changes.
+         */
+        public val GUESS_RATE: Double =
+            1.0 / (CentralFigure.entries.size.toDouble() * Direction.COUNT.toDouble())
+
+        /**
+         * Significance level for the above-chance test.
+         *
+         * Stricter than the conventional 0.05, and deliberately so, because the costs of
+         * the two errors are wildly unequal here. Discarding a real measurement loses one
+         * session. Accepting a fabricated one writes a baseline into the record that
+         * every later comparison is made against, and the person is never told. So the
+         * bar for declaring "this measured something" is set high.
+         *
+         * It is close to free. Against a guess rate of 1/16, a genuinely weak observer
+         * scoring 12 of 60 still clears 0.01 by three orders of magnitude; the sessions
+         * this excludes and 0.05 would not are only ever the ambiguous ones.
+         *
+         * Note this is the *only* gate against guessing. The ceiling flag is not a
+         * backstop: a guessing run whose early reversals happen during the ascent can
+         * land its geometric mean a long way below the top of the range. That was
+         * measured, not assumed — see `ThresholdValidityTest`.
+         */
+        public const val CHANCE_ALPHA: Double = 0.01
     }
+}
+
+/**
+ * Whether a threshold may be shown as a threshold.
+ *
+ * This is deliberately not a boolean. Each of these has a different honest sentence to
+ * say to the person, and collapsing them into "invalid" would mean saying none of them.
+ */
+public enum class ThresholdValidity {
+    /** A real threshold, bracketed by the staircase, on a display that kept up. */
+    USABLE,
+
+    /**
+     * Performance was not distinguishable from guessing, so nothing was measured. This
+     * is the one case where no number is shown at all.
+     */
+    AT_CHANCE,
+
+    /** The display dropped too many stimulus frames for the number to be trusted. */
+    DISPLAY_UNRELIABLE,
+
+    /** The staircase ran against the top of its range; the real threshold is above it. */
+    CEILING_LIMITED,
+    ;
+
+    /** Whether this session may contribute a point to the long-term trend. */
+    public val isTrendEligible: Boolean get() = this == USABLE || this == CEILING_LIMITED
 }

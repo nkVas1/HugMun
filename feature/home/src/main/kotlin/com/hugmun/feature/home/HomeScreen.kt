@@ -94,9 +94,13 @@ public fun HomeScreen(
             )
         }
 
-        state.lastSession?.thresholdMillis?.let { millis ->
-            LastResultLine(millis)
-        }
+        // Only a session the app is willing to stand behind. Showing the number from a
+        // run that measured nothing would make the home screen the one place a rejected
+        // result still looks like a result.
+        state.lastSession
+            ?.takeIf { it.validity.isTrendEligible }
+            ?.thresholdMillis
+            ?.let { millis -> LastResultLine(millis) }
 
         if (plan?.isEnrolled == true) {
             OptionalPractices(onOpen = onOpenOptional)

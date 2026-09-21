@@ -63,7 +63,13 @@ public class VigilanceRepositoryImpl(private val dao: VigilanceDao, private val 
     }
 
     /**
-     * Thresholds for the change detector, oldest first, quality-filtered in SQL.
+     * Thresholds eligible for the change detector, oldest first.
+     *
+     * Eligibility is decided by [StoredVigilanceSession.validity] in Kotlin rather than
+     * by a `WHERE` clause, because the test for above-chance performance is a binomial
+     * tail that SQL has no business computing, and because two definitions of "a session
+     * we trust" would inevitably drift apart. The SQL still narrows to rows that have a
+     * threshold at all, so the amount read back stays bounded.
      *
      * Oldest-first because [com.hugmun.core.domain.ReliableChange] treats the list as a
      * history and the caller should not have to remember to reverse it.
@@ -72,7 +78,11 @@ public class VigilanceRepositoryImpl(private val dao: VigilanceDao, private val 
         level: UfovLevel = UfovLevel.PRIMARY,
         limit: Int = HISTORY_LIMIT,
     ): List<Double> = withContext(dispatchers.io) {
-        dao.recentThresholds(level.id, limit).reversed()
+        dao.recentMeasuredSessions(level.id, limit)
+            .map { it.toDomain() }
+            .filter { it.validity.isTrendEligible }
+            .mapNotNull { it.thresholdMillis }
+            .reversed()
     }
 
     private companion object {

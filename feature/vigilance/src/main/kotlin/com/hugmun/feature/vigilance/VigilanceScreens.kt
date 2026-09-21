@@ -27,6 +27,7 @@ import com.hugmun.core.designsystem.component.RavenWatermark
 import com.hugmun.core.designsystem.theme.HugMunTheme
 import com.hugmun.core.domain.StoredVigilanceSession
 import com.hugmun.core.model.Practice
+import com.hugmun.engine.psychophysics.ThresholdValidity
 import kotlin.math.roundToInt
 
 /**
@@ -107,6 +108,7 @@ public fun VigilanceIntroScreen(
  */
 public data class VigilanceResultView(
     public val thresholdMillis: Double?,
+    public val validity: ThresholdValidity,
     public val isFloorLimited: Boolean,
     public val isQualityAcceptable: Boolean,
     public val scoredTrials: Int,
@@ -119,6 +121,7 @@ public data class VigilanceResultView(
     public companion object {
         public fun from(session: StoredVigilanceSession): VigilanceResultView = VigilanceResultView(
             thresholdMillis = session.thresholdMillis,
+            validity = session.validity,
             isFloorLimited = session.isFloorLimited,
             isQualityAcceptable = session.isQualityAcceptable,
             scoredTrials = session.scoredTrials,
@@ -130,6 +133,37 @@ public data class VigilanceResultView(
         )
     }
 }
+
+/**
+ * What to say when there is no number to show.
+ *
+ * Three different situations, three different sentences. The temptation is one polite
+ * catch-all, but "не получилось" after a person has concentrated for twelve minutes is
+ * only acceptable if it also says why, and the why is genuinely different each time.
+ */
+private fun noMeasurementExplanation(result: VigilanceResultView?): String = when {
+    result == null ->
+        "В этот раз замера не получилось — занятие закончилось слишком рано, " +
+            "чтобы посчитать порог. Ничего страшного: занятие всё равно засчитано."
+
+    result.validity == ThresholdValidity.AT_CHANCE && result.scoredTrials >= MIN_TRIALS_FOR_CHANCE_WORDING ->
+        "Порог в этот раз посчитать не вышло: ответы совпадали с правильными примерно так же " +
+            "часто, как при случайном выборе, а значит измерять было нечего. Чаще всего дело " +
+            "не в человеке, а в условиях — слишком мелко, темно, далеко или непонятно, что " +
+            "именно требуется. Занятие засчитано. Если повторится, попробуйте сесть поближе " +
+            "к свету и заново прочитать описание перед началом."
+
+    result.validity == ThresholdValidity.AT_CHANCE ->
+        "Занятие закончилось раньше, чем набралось достаточно ответов для замера. Ничего " +
+            "страшного: оно всё равно засчитано."
+
+    else ->
+        "В этот раз замера не получилось — занятие закончилось слишком рано, чтобы " +
+            "посчитать порог. Ничего страшного: занятие всё равно засчитано."
+}
+
+/** Below this, a chance-level result is better explained by the session being short. */
+private const val MIN_TRIALS_FOR_CHANCE_WORDING = 20
 
 @Composable
 public fun VigilanceResultScreen(
@@ -148,21 +182,27 @@ public fun VigilanceResultScreen(
 
         HugScreenTitle(text = "Занятие завершено")
 
-        if (result?.thresholdMillis == null) {
+        val measured = result
+            ?.takeIf { it.validity != ThresholdValidity.AT_CHANCE }
+            ?.takeIf { it.thresholdMillis != null }
+
+        if (measured?.thresholdMillis == null) {
             HugCard {
                 Text(
-                    text = "В этот раз замера не получилось — занятие закончилось слишком рано, " +
-                        "чтобы посчитать порог. Ничего страшного: занятие всё равно засчитано.",
+                    text = noMeasurementExplanation(result),
                     style = HugMunTheme.type.bodyL,
                     color = colors.ink,
                 )
+            }
+            if (result != null) {
+                SessionDetail(result)
             }
         } else {
             HugCard {
                 Text(text = "Ваш порог", style = HugMunTheme.type.label, color = colors.inkMuted)
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = result.thresholdMillis.roundToInt().toString(),
+                        text = measured.thresholdMillis.roundToInt().toString(),
                         style = HugMunTheme.type.numericXL,
                         color = colors.ink,
                     )
@@ -197,7 +237,16 @@ public fun VigilanceResultScreen(
                 }
             }
 
-            if (result.isFloorLimited) {
+            if (measured.validity == ThresholdValidity.CEILING_LIMITED) {
+                HugNote(
+                    text = "Картинку показывали настолько долго, насколько это упражнение " +
+                        "допускает, и запаса уже не осталось. Ваш порог, скорее всего, выше " +
+                        "этого числа — насколько именно, отсюда не видно.",
+                    tone = NoteTone.Caution,
+                )
+            }
+
+            if (measured.isFloorLimited) {
                 HugNote(
                     text = "Ваш результат упёрся в возможности экрана: короче он показать не " +
                         "может. Настоящий порог, возможно, ещё меньше.",
@@ -205,7 +254,7 @@ public fun VigilanceResultScreen(
                 )
             }
 
-            if (!result.isQualityAcceptable) {
+            if (!measured.isQualityAcceptable) {
                 HugNote(
                     text = "Экран не успевал показывать картинку вовремя в части проб, поэтому " +
                         "к этому числу стоит отнестись осторожно. Такие пробы не учитывались.",
@@ -213,7 +262,7 @@ public fun VigilanceResultScreen(
                 )
             }
 
-            SessionDetail(result)
+            SessionDetail(measured)
         }
 
         // The sentence the whole product depends on. Never abbreviated, never moved to a

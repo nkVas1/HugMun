@@ -7,7 +7,12 @@ package com.hugmun.core.domain
 import com.hugmun.core.model.AdverseEvent
 import com.hugmun.core.model.Practice
 import com.hugmun.core.model.SessionOutcome
+import com.hugmun.engine.psychophysics.BinomialTest
 import com.hugmun.engine.psychophysics.CompletedTrial
+import com.hugmun.engine.psychophysics.DisplayTiming
+import com.hugmun.engine.psychophysics.ThresholdEstimate
+import com.hugmun.engine.psychophysics.ThresholdValidity
+import com.hugmun.engine.psychophysics.UfovSession
 import com.hugmun.engine.psychophysics.UfovSessionResult
 import com.hugmun.engine.scheduling.TrainingProtocol
 import kotlin.time.Instant
@@ -75,7 +80,42 @@ public data class StoredVigilanceSession(
     public val discardedTrials: Int,
     public val reversalsUsed: Int,
     public val accuracy: Double,
-)
+) {
+    /**
+     * What this stored session is allowed to claim, recomputed from what was stored.
+     *
+     * Derived rather than persisted on purpose. A verdict written into the row at save
+     * time would freeze whatever the rules were that day, and — worse — would grandfather
+     * in every session recorded before the rules existed. Recomputing means a session
+     * that should never have been trusted stops being trusted the moment we work that
+     * out, including retroactively.
+     */
+    public val validity: ThresholdValidity
+        get() {
+            if (thresholdMillis == null) return ThresholdValidity.AT_CHANCE
+            val timing = DisplayTiming(refreshHz)
+            val config = UfovSession.defaultConfigFor(timing)
+            val frames = thresholdMillis / timing.frameMillis
+            val aboveChance = BinomialTest.upperTailProbability(
+                successes = correctTrials,
+                trials = scoredTrials,
+                probability = UfovSessionResult.GUESS_RATE,
+            ) < UfovSessionResult.CHANCE_ALPHA
+            return when {
+                !aboveChance -> ThresholdValidity.AT_CHANCE
+                !isQualityAcceptable -> ThresholdValidity.DISPLAY_UNRELIABLE
+                estimateOf(frames).isCeilingLimited(config) -> ThresholdValidity.CEILING_LIMITED
+                else -> ThresholdValidity.USABLE
+            }
+        }
+
+    private fun estimateOf(frames: Double): ThresholdEstimate = ThresholdEstimate(
+        frames = frames,
+        reversalsUsed = reversalsUsed,
+        totalTrials = scoredTrials + discardedTrials,
+        discardedTrials = discardedTrials,
+    )
+}
 
 /** Safety state: screening answers, consents, and practice locks. */
 public interface SafetyRepository {

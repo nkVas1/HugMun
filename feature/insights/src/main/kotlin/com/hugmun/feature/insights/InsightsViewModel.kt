@@ -11,6 +11,7 @@ import com.hugmun.core.domain.ProtocolRepository
 import com.hugmun.core.domain.ReliableChange
 import com.hugmun.core.domain.StoredVigilanceSession
 import com.hugmun.core.domain.VigilanceRepository
+import com.hugmun.engine.psychophysics.ThresholdValidity
 import com.hugmun.engine.scheduling.TrainingProtocol
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,7 +52,7 @@ public class InsightsViewModel(vigilanceRepository: VigilanceRepository, protoco
         // Sessions the app does not trust are shown, but never used to compute the
         // baseline or the judgement. Hiding them would be worse: the gap would be
         // unexplained.
-        val trustworthy = measured.filter { it.isQualityAcceptable }
+        val trustworthy = measured.filter { it.validity.isTrendEligible }
         val history = trustworthy.dropLast(1).mapNotNull { it.thresholdMillis }
         val latest = trustworthy.lastOrNull()?.thresholdMillis
 
@@ -66,7 +67,8 @@ public class InsightsViewModel(vigilanceRepository: VigilanceRepository, protoco
             totalSessions = protocol?.totalSessionsCompleted ?: 0,
             phase = protocol?.phase,
             hasCompletedABoosterBlock = protocol?.let(TrainingProtocol::hasCompletedABoosterBlock) ?: false,
-            excludedForQuality = measured.size - trustworthy.size,
+            excludedAtChance = measured.count { it.validity == ThresholdValidity.AT_CHANCE },
+            excludedForQuality = measured.count { it.validity == ThresholdValidity.DISPLAY_UNRELIABLE },
         )
     }
 
@@ -93,4 +95,5 @@ public data class InsightsUiState(
     public val hasCompletedABoosterBlock: Boolean = false,
     /** Sessions shown on the chart but excluded from the judgement. */
     public val excludedForQuality: Int = 0,
+    public val excludedAtChance: Int = 0,
 )

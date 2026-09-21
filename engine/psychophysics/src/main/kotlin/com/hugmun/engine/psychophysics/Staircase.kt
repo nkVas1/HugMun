@@ -123,6 +123,29 @@ public data class ThresholdEstimate(
      * "better" number on a faster display would not mean the person improved.
      */
     public fun isFloorLimited(config: StaircaseConfig): Boolean = frames < config.minFrames + 1.0
+
+    /**
+     * Whether the estimate sits against the top of the staircase's range.
+     *
+     * The mirror of [isFloorLimited], and the more consequential of the two. A staircase
+     * whose level has run to the ceiling still produces reversals — every error pushes
+     * against the clamp and every lucky guess steps down from it — so it terminates
+     * normally and returns the ceiling dressed up as a threshold. The participant's real
+     * threshold is somewhere above the range and was never bracketed.
+     *
+     * The margin is *one staircase step*, not one frame. That distinction is not
+     * cosmetic: a level clamped at the ceiling still steps down after every success, so
+     * the reversals it records straddle the top two or three rungs and their geometric
+     * mean lands just below `maxFrames`. A one-frame margin misses exactly the case this
+     * is for. One step is also the honest resolution of the procedure — the estimate was
+     * never able to distinguish anything finer.
+     */
+    public fun isCeilingLimited(config: StaircaseConfig): Boolean =
+        frames >= config.maxFrames * TEN.pow(-config.stepDownLog10)
+
+    private companion object {
+        const val TEN = 10.0
+    }
 }
 
 /**

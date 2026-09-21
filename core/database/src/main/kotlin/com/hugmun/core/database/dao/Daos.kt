@@ -43,22 +43,23 @@ public interface VigilanceDao {
     public suspend fun latestSession(): VigilanceSessionEntity?
 
     /**
-     * Thresholds for the trend, newest first, excluding sessions the app does not trust.
+     * Candidate sessions for the trend, newest first.
      *
-     * Quality filtering happens in SQL rather than in Kotlin so that every consumer gets
-     * the same answer; a caller who forgot to filter would silently plot degraded data.
+     * Only the cheap structural filter lives here — a row with no threshold can never
+     * contribute. Whether a threshold is *trustworthy* is decided upstream, because that
+     * test includes a binomial tail against the guess rate and belongs with the rest of
+     * the measurement logic rather than split across a `WHERE` clause.
      */
     @Query(
         """
-        SELECT thresholdMillis FROM vigilance_session
+        SELECT * FROM vigilance_session
         WHERE thresholdMillis IS NOT NULL
-          AND isQualityAcceptable = 1
           AND level = :level
         ORDER BY startedAtEpochMillis DESC
         LIMIT :limit
         """,
     )
-    public suspend fun recentThresholds(level: Int, limit: Int): List<Double>
+    public suspend fun recentMeasuredSessions(level: Int, limit: Int): List<VigilanceSessionEntity>
 
     @Query("SELECT * FROM vigilance_trial WHERE sessionId = :sessionId ORDER BY trialIndex")
     public suspend fun trialsFor(sessionId: Long): List<VigilanceTrialEntity>

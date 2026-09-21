@@ -84,6 +84,15 @@ public fun InsightsScreen(
                     )
                 }
 
+                if (state.excludedAtChance > 0) {
+                    HugNote(
+                        text = "Занятий, где ответы совпадали с правильными не чаще, чем при " +
+                            "случайном выборе: ${state.excludedAtChance}. Порог там измерить " +
+                            "не удалось, поэтому в расчёт они не идут.",
+                        tone = NoteTone.Caution,
+                    )
+                }
+
                 HugSectionHeader(text = "Курс")
                 ProgressCard(
                     totalSessions = state.totalSessions,
@@ -197,7 +206,9 @@ private fun StoredVigilanceSession.toPoint(): TrendPoint {
     return TrendPoint(
         value = thresholdMillis ?: 0.0,
         label = "${date.day}.${date.month.ordinal + 1}",
-        isProvisional = !isQualityAcceptable,
+        // Plotted, but drawn as provisional: the chart shows every session so a gap is
+        // never left unexplained, while the shape marks which ones the verdict ignored.
+        isProvisional = !validity.isTrendEligible,
     )
 }
 
