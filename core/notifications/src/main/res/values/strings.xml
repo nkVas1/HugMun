@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_plan_name">Занятия</string>
+    <string name="notification_channel_plan_description">Напоминание, когда по расписанию есть занятие</string>
+
+    <string name="notification_plan_title">Сегодня есть занятие</string>
+    <string name="notification_plan_body_single">%1$s — около %2$d минут</string>
+    <string name="notification_plan_action">Открыть</string>
+</resources>

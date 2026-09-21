@@ -4,10 +4,13 @@
  */
 package com.hugmun
 
+import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +45,25 @@ public class MainActivity : ComponentActivity() {
 
         val graph = (application as HugMunApplication).graph
 
+        // Asked in context — when the user first enrols and reminders start to mean
+        // something — rather than thrown at them on first launch before they know what
+        // the app is for.
+        val notificationPermission = registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { /* Declining is fine; the schedule still works inside the app. */ }
+
         setContent {
             val timing by remember { mutableStateOf(DisplayInfo.current(this)) }
             HugMunTheme {
-                HugMunApp(graph = graph, displayTiming = timing)
+                HugMunApp(
+                    graph = graph,
+                    displayTiming = timing,
+                    onRequestNotificationPermission = {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                    },
+                )
             }
         }
     }

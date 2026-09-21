@@ -48,6 +48,7 @@ include(":core:database") // Room 3
 include(":core:datastore") // preferences
 include(":core:data") // repositories
 include(":core:domain") // use cases
+include(":core:notifications") // reminders; the multi-year booster schedule depends on these
 include(":core:testing") // shared test infrastructure
 
 // -----------------------------------------------------------------------------

@@ -42,6 +42,7 @@ import kotlinx.datetime.Month
 @Composable
 public fun HomeScreen(
     viewModel: HomeViewModel,
+    onEnrolled: () -> Unit,
     onStartPractice: (Practice) -> Unit,
     onOpenOptional: (Practice) -> Unit,
     onOpenEvidence: (Practice) -> Unit,
@@ -61,7 +62,14 @@ public fun HomeScreen(
             state.isLoading -> Unit
 
             plan == null || !plan.isEnrolled -> FirstRunCard(
-                onBegin = { viewModel.enrolIfNeeded { onStartPractice(Practice.VIGILANCE) } },
+                onBegin = {
+                    viewModel.enrolIfNeeded {
+                        // Reminders only become meaningful once there is a schedule, so
+                        // this is where the permission is asked for.
+                        onEnrolled()
+                        onStartPractice(Practice.VIGILANCE)
+                    }
+                },
             )
 
             !plan.hasAnythingDue -> NothingDueCard(plan.entries.firstOrNull())

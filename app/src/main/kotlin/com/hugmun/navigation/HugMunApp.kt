@@ -54,7 +54,12 @@ import com.hugmun.feature.vigilance.VigilanceViewModel
  * it means "where can the user go from here?" is answered by reading one `when`.
  */
 @Composable
-public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Modifier = Modifier) {
+public fun HugMunApp(
+    graph: AppGraph,
+    displayTiming: DisplayTiming,
+    onRequestNotificationPermission: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val backStack = rememberNavBackStack(Destination.Today)
 
     // A session must not be interruptible by a stray back gesture; the screen offers an
@@ -103,6 +108,7 @@ public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Mo
                 )
                 HomeScreen(
                     viewModel = viewModel,
+                    onEnrolled = onRequestNotificationPermission,
                     onStartPractice = { goTo(Destination.VigilanceIntro) },
                     onOpenOptional = { practice ->
                         when (practice) {

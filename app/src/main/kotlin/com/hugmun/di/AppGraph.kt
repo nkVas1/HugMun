@@ -22,6 +22,7 @@ import com.hugmun.core.domain.PreferencesRepository
 import com.hugmun.core.domain.ProtocolRepository
 import com.hugmun.core.domain.SafetyRepository
 import com.hugmun.core.domain.VigilanceRepository
+import com.hugmun.core.notifications.ReminderScheduler
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,17 @@ public class AppGraph(private val context: Context, public val dispatchers: AppD
 
     public val planToday: PlanTodayUseCase by lazy {
         PlanTodayUseCase(protocolRepository, safetyRepository, timeSource)
+    }
+
+    // --- Reminders ----------------------------------------------------------------
+
+    /**
+     * The schedule has to be able to reach the user in eleven months, and again in
+     * thirty-five. Without this the app implements the ACTIVE arm that showed no
+     * effect — see the class docs on [ReminderScheduler].
+     */
+    public val reminderScheduler: ReminderScheduler by lazy {
+        ReminderScheduler(context, timeSource)
     }
 }
 
