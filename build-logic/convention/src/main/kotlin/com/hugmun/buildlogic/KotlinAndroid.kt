@@ -46,6 +46,11 @@ internal fun Project.configureAndroidKotlin(extension: CommonExtension) {
             "GradleDependency",
             "NewerVersionAvailable",
             "AndroidGradlePluginVersion",
+            // Fires only on `local.properties`, which is gitignored, machine-specific
+            // and not part of the project. It also rejects the exact replacement its
+            // own message suggests, so there is nothing a Windows contributor could
+            // write that would satisfy it.
+            "PropertyEscape",
         )
         // AGP 9 always produces XML, HTML and SARIF lint reports; the toggles are gone.
     }

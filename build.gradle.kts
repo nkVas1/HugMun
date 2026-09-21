@@ -67,13 +67,23 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 
 /**
  * One command that mirrors what CI enforces, so contributors never have to guess.
+ *
+ * The list is kept in step with `.github/workflows/ci.yml` by hand. It was once shorter
+ * than CI — it ran formatting and static analysis but neither the tests nor a compile of
+ * the Android modules — so `qualityCheck` reported success on a tree that did not build.
+ * A green local gate that is weaker than the remote one is worse than no local gate.
  */
 tasks.register("qualityCheck") {
     group = "verification"
-    description = "Formatting, static analysis, lint and unit tests — the same set CI runs."
+    description = "Formatting, static analysis, lint, unit tests and a debug build — the same set CI runs."
     dependsOn(
         "spotlessCheck",
         "detekt",
+        ":app:assembleDebug",
         gradle.includedBuilds.map { it.task(":convention:build") },
     )
+    // Every module's own `check`, which is where AGP and the Kotlin plugin have already
+    // wired up unit tests and lint. Naming them individually here would mean a new
+    // module is silently unverified until someone remembers to add it.
+    dependsOn(subprojects.map { "${it.path}:check" })
 }
