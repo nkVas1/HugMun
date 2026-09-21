@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.hugmun.engine.audio"
 }
+
+dependencies {
+    implementation(projects.engine.psychophysics)
+}
