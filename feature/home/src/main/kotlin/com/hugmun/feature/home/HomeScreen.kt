@@ -43,6 +43,7 @@ import kotlinx.datetime.Month
 public fun HomeScreen(
     viewModel: HomeViewModel,
     onStartPractice: (Practice) -> Unit,
+    onOpenOptional: (Practice) -> Unit,
     onOpenEvidence: (Practice) -> Unit,
     modifier: Modifier = Modifier,
     bottomBar: @Composable () -> Unit = {},
@@ -87,6 +88,10 @@ public fun HomeScreen(
 
         state.lastSession?.thresholdMillis?.let { millis ->
             LastResultLine(millis)
+        }
+
+        if (plan?.isEnrolled == true) {
+            OptionalPractices(onOpen = onOpenOptional)
         }
     }
 }
@@ -193,6 +198,48 @@ private fun PracticeCard(entry: PlannedPractice, onStart: () -> Unit, onOpenEvid
             text = stringResource(R.string.home_start),
             onClick = onStart,
             modifier = Modifier.padding(top = dimens.spaceS),
+        )
+    }
+}
+
+/**
+ * Practices that are available but not scheduled.
+ *
+ * Kept visually and textually separate from the plan. The plan is what the evidence
+ * says to do today; this is what the user may do if they want to, and the difference
+ * should be obvious at a glance rather than buried in a tier badge.
+ */
+@Composable
+private fun OptionalPractices(onOpen: (Practice) -> Unit) {
+    val colors = HugMunTheme.colors
+
+    HugSectionHeader(text = "Можно сделать дополнительно")
+
+    HugCard(onClick = { onOpen(Practice.RHYTHM) }) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = Practice.RHYTHM.displayName,
+                    style = HugMunTheme.type.titleM,
+                    color = colors.ink,
+                )
+                Text(
+                    text = Practice.RHYTHM.subtitle,
+                    style = HugMunTheme.type.bodyM,
+                    color = colors.inkMuted,
+                )
+            }
+        }
+        HugEvidenceBadge(tier = Practice.RHYTHM.tier)
+        Text(
+            text = "Не входит в расписание: доказательств пока мало, чтобы назначать это " +
+                "как часть курса.",
+            style = HugMunTheme.type.label,
+            color = colors.inkFaint,
         )
     }
 }

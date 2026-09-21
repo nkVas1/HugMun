@@ -35,6 +35,11 @@ import com.hugmun.feature.insights.InsightsScreen
 import com.hugmun.feature.insights.InsightsViewModel
 import com.hugmun.feature.library.EvidenceScreen
 import com.hugmun.feature.library.LibraryScreen
+import com.hugmun.feature.rhythm.PhoticConsentScreen
+import com.hugmun.feature.rhythm.PhotosensitivityScreeningScreen
+import com.hugmun.feature.rhythm.RhythmIntroScreen
+import com.hugmun.feature.rhythm.RhythmSessionScreen
+import com.hugmun.feature.rhythm.RhythmViewModel
 import com.hugmun.feature.vigilance.VigilanceIntroScreen
 import com.hugmun.feature.vigilance.VigilanceResultScreen
 import com.hugmun.feature.vigilance.VigilanceResultView
@@ -99,6 +104,12 @@ public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Mo
                 HomeScreen(
                     viewModel = viewModel,
                     onStartPractice = { goTo(Destination.VigilanceIntro) },
+                    onOpenOptional = { practice ->
+                        when (practice) {
+                            Practice.RHYTHM -> goTo(Destination.RhythmIntro)
+                            else -> goTo(Destination.Evidence(practice.id))
+                        }
+                    },
                     onOpenEvidence = { goTo(Destination.Evidence(it.id)) },
                     bottomBar = bottomBar,
                 )
@@ -147,6 +158,50 @@ public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Mo
                         backStack.add(Destination.VigilanceResult(sessionId ?: 0L))
                     },
                 )
+            }
+
+            entry<Destination.RhythmIntro> {
+                val viewModel = rhythmViewModel(graph)
+                LaunchedEffect(displayTiming) { viewModel.onDisplayResolved(displayTiming) }
+                RhythmIntroScreen(
+                    viewModel = viewModel,
+                    onStartAudioOnly = { goTo(Destination.RhythmSession(withLight = false)) },
+                    onStartWithLight = { goTo(Destination.RhythmSession(withLight = true)) },
+                    onOpenScreening = { goTo(Destination.RhythmScreening) },
+                    onOpenEvidence = { goTo(Destination.Evidence(Practice.RHYTHM.id)) },
+                )
+            }
+
+            entry<Destination.RhythmScreening> {
+                val viewModel = rhythmViewModel(graph)
+                PhotosensitivityScreeningScreen(
+                    viewModel = viewModel,
+                    onFinished = {
+                        backStack.removeAt(backStack.lastIndex)
+                        goTo(Destination.RhythmConsent)
+                    },
+                )
+            }
+
+            entry<Destination.RhythmConsent> {
+                val viewModel = rhythmViewModel(graph)
+                PhoticConsentScreen(
+                    viewModel = viewModel,
+                    onGranted = { backStack.removeAt(backStack.lastIndex) },
+                    onDeclined = { backStack.removeAt(backStack.lastIndex) },
+                )
+            }
+
+            entry<Destination.RhythmSession> { key ->
+                val viewModel = rhythmViewModel(graph)
+                // Dark surround is part of the stimulus, not a preference.
+                HugMunTheme(forceDark = true) {
+                    RhythmSessionScreen(
+                        viewModel = viewModel,
+                        withLight = key.withLight,
+                        onFinished = { popToToday() },
+                    )
+                }
             }
 
             entry<Destination.VigilanceResult> {
@@ -213,6 +268,21 @@ private fun VigilanceResultRoute(graph: AppGraph, onDone: () -> Unit) {
         Box(modifier = Modifier.fillMaxSize())
     }
 }
+
+/**
+ * One ViewModel shared across the «Ритм» flow.
+ *
+ * Keyed so that the screening, consent and session screens see the same instance:
+ * answering the questionnaire must immediately change what the intro screen offers.
+ */
+@Composable
+private fun rhythmViewModel(graph: AppGraph): RhythmViewModel = viewModel(
+    key = "rhythm",
+    factory = RhythmViewModel.Factory(
+        safetyRepository = graph.safetyRepository,
+        timeSource = graph.timeSource,
+    ),
+)
 
 @Composable
 private fun PlaceholderScreen(title: String, body: String, bottomBar: @Composable () -> Unit = {}) {

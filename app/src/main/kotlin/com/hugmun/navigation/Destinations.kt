@@ -46,6 +46,24 @@ public sealed interface Destination : NavKey {
     @Serializable
     public data class VigilanceResult(public val sessionId: Long) : Destination
 
+    // --- «Ритм» ---------------------------------------------------------------------
+
+    /** Explains the practice, its evidence tier and why the light may be unavailable. */
+    @Serializable
+    public data object RhythmIntro : Destination
+
+    /** The photosensitivity questionnaire. */
+    @Serializable
+    public data object RhythmScreening : Destination
+
+    /** Consent for the photic channel, separate from onboarding consent by design. */
+    @Serializable
+    public data object RhythmConsent : Destination
+
+    /** The session. [withLight] is false for the audio-only variant. */
+    @Serializable
+    public data class RhythmSession(public val withLight: Boolean) : Destination
+
     // --- Supporting -----------------------------------------------------------------
 
     /** The evidence card for one practice. */

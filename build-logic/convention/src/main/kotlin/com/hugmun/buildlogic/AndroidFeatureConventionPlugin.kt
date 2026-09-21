@@ -24,6 +24,10 @@ public class AndroidFeatureConventionPlugin : Plugin<Project> {
             add("implementation", project(":core:designsystem"))
             add("implementation", project(":core:domain"))
 
+            // Feature screens need BackHandler to intervene in system back, which
+            // several of them must: a stimulation session cannot be dismissed by a
+            // stray gesture without stopping the stimulus first.
+            add("implementation", library("androidx-activity-compose"))
             add("implementation", library("androidx-lifecycle-viewmodel-compose"))
             add("implementation", library("androidx-lifecycle-runtime-compose"))
             add("implementation", library("androidx-navigation3-runtime"))
