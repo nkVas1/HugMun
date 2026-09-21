@@ -3,9 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!--
-      Two permissions, both optional, both explained in the interface before they are
-      requested. There is no network permission at all: the app has no server, and the
-      absence of INTERNET is the strongest privacy guarantee we can make.
+      Three permissions declared here, all optional and all explained in the interface
+      before they are requested.
+
+      Note what is absent: INTERNET. The app has no server and cannot make a network
+      request even if a future bug tried to, which is a stronger guarantee than any
+      privacy policy. WorkManager's own manifest does contribute ACCESS_NETWORK_STATE,
+      WAKE_LOCK, RECEIVE_BOOT_COMPLETED and FOREGROUND_SERVICE to the merged manifest;
+      they are how it survives reboots and Doze so the booster schedule still reaches
+      the user in eleven months. Without INTERNET, ACCESS_NETWORK_STATE can observe
+      connectivity but nothing can be sent anywhere. We are not stripping them, because
+      removing a permission a library declares is how you get a SecurityException in
+      production; we are documenting them instead.
     -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />

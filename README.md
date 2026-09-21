@@ -173,6 +173,39 @@ See [`docs/adr`](docs/adr).
 
 ---
 
+## Project status
+
+Pre-1.0, and honest about it. The engineering foundations and the two practices with the
+strongest evidence are built and tested; the rest is specified but not yet implemented.
+
+| Area | State |
+| --- | --- |
+| Research dossier, evidence tiers, safety policy | Complete |
+| Design language, contrast gate, component library | Complete |
+| `:engine:psychophysics` — UFOV, staircase, frame timing | Complete, tested |
+| `:engine:scheduling` — FSRS-6, ACTIVE booster protocol | Complete, tested |
+| `:engine:audio` — 40 Hz AM synthesis | Complete, tested |
+| `:engine:signal` — PPG, HRV, resonance sweep | Complete, tested |
+| `:engine:visuals` — frame presenter, photic safety envelope | Complete, tested |
+| **Зоркость** — speed of processing | Complete, end to end |
+| **Якорь** — practical memory | Complete, end to end (text items; photos not yet) |
+| **Ритм** — 40 Hz stimulation | Complete, end to end |
+| Trend view with reliable change | Complete |
+| Evidence library | Complete |
+| Reminders (WorkManager) | Complete |
+| **Дыхание** — breathing | Engine done; camera UI not built |
+| **Движение** — movement | Not started |
+| **Замер** — measurement battery | Specified; not built |
+| **Компас** — risk factors | Specified; not built |
+| Onboarding, settings, data export | Not built |
+| Baseline profile, macrobenchmark | Module scaffolded; profiles not generated |
+
+**Not yet run on a physical device.** Everything compiles, produces an installable APK,
+and the whole measurement path is covered by JVM tests against simulated observers and
+synthetic signals — but frame-timing accuracy, audio latency and PPG signal quality are
+properties of real hardware and have not been measured on any. That verification is the
+next milestone, not a formality.
+
 ## Building
 
 ```bash
@@ -192,10 +225,18 @@ Requires JDK 17+ (the build uses a JDK 21 toolchain and targets bytecode 17).
 
 ## Privacy
 
-There is no server. There is no account. Photos, names, health logs and raw PPG frames
-stay on the device; the camera is used only during an active breathing session and frames
-are analysed in memory and never written to storage. Telemetry is opt-in and never
-includes content. Everything can be exported in a readable archive or deleted in one tap.
+There is no server and no account. Names, health logs and raw PPG frames stay on the
+device; the camera is used only during an active breathing session and frames are
+analysed in memory, never written to storage. Cloud backup and device-to-device transfer
+are disabled in the manifest.
+
+**The app does not hold the `INTERNET` permission**, so it cannot make a network request
+even if a future bug tried to — a stronger guarantee than a privacy policy. WorkManager
+contributes `ACCESS_NETWORK_STATE`, `WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED` and
+`FOREGROUND_SERVICE` to the merged manifest; those are how the schedule survives reboots
+and Doze, and without `INTERNET` they cannot be used to send anything anywhere. They are
+documented in the manifest rather than stripped, because removing a permission a library
+declares is a reliable way to produce a `SecurityException` in production.
 
 ---
 
