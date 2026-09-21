@@ -81,11 +81,19 @@ internal fun Project.configureJvmKotlin() {
     }
 }
 
+/**
+ * The toolchain JDK (21) is what *runs* the compiler; the bytecode target (17) is what
+ * Android can actually load. Keeping these separate lets contributors build on a modern
+ * JDK without accidentally emitting class files the platform rejects, and keeps the
+ * Java and Kotlin compile tasks from disagreeing about the target.
+ */
 private fun Project.configureJavaToolchain() {
     extensions.configure<JavaPluginExtension> {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(catalogVersion("jvmToolchain").toInt()))
         }
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

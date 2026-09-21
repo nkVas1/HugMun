@@ -46,10 +46,12 @@ speed-training arm [@ball2002active].
 Weighted up–down staircase (Kaernbach) converging on **75 % correct**, which is the
 UFOV criterion **[fixed]**.
 
-- Step in **log duration**, base step `Δ = 0.10 log₁₀ units`.
-- After a correct response: decrease by `Δ_down = 0.2845 · Δ`.
-- After an error: increase by `Δ_up = Δ`.
-- Ratio `Δ_down/Δ_up = 0.2845` places the convergence point at p = 0.75.
+- Step in **log duration**, base step `Δ_up = 0.10 log₁₀ units`.
+- After a correct response: decrease the level by `Δ_down`.
+- After an error: increase the level by `Δ_up`.
+- The convergence point follows from requiring zero expected drift:
+  `p·Δ_down = (1 − p)·Δ_up`, hence `Δ_down/Δ_up = (1 − p)/p`.
+  For p = 0.75 that is exactly **1/3**.
 - Terminate after **8 reversals** or 60 trials, whichever comes first.
 - Threshold = geometric mean of the last **6** reversal points.
 - Both subtasks must be correct for the trial to count as correct.
