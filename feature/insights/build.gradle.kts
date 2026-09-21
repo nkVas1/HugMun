@@ -5,3 +5,7 @@ plugins {
 android {
     namespace = "com.hugmun.feature.insights"
 }
+
+dependencies {
+    implementation(projects.engine.scheduling)
+}

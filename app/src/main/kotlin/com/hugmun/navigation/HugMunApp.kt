@@ -21,16 +21,20 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.hugmun.R
 import com.hugmun.core.designsystem.component.BottomBarItem
 import com.hugmun.core.designsystem.component.HugBottomBar
 import com.hugmun.core.designsystem.component.HugScreen
 import com.hugmun.core.designsystem.component.HugScreenTitle
 import com.hugmun.core.designsystem.theme.HugMunTheme
+import com.hugmun.core.model.Practice
 import com.hugmun.di.AppGraph
 import com.hugmun.engine.psychophysics.DisplayTiming
 import com.hugmun.feature.home.HomeScreen
 import com.hugmun.feature.home.HomeViewModel
+import com.hugmun.feature.insights.InsightsScreen
+import com.hugmun.feature.insights.InsightsViewModel
+import com.hugmun.feature.library.EvidenceScreen
+import com.hugmun.feature.library.LibraryScreen
 import com.hugmun.feature.vigilance.VigilanceIntroScreen
 import com.hugmun.feature.vigilance.VigilanceResultScreen
 import com.hugmun.feature.vigilance.VigilanceResultView
@@ -101,18 +105,18 @@ public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Mo
             }
 
             entry<Destination.Progress> {
-                PlaceholderScreen(
-                    title = stringResource(R.string.nav_progress),
-                    body = "Здесь появится ваша динамика: график порога и полоса обычной " +
-                        "изменчивости. Пока замеров слишком мало, чтобы что-то показывать.",
-                    bottomBar = bottomBar,
+                val viewModel: InsightsViewModel = viewModel(
+                    factory = InsightsViewModel.Factory(
+                        vigilanceRepository = graph.vigilanceRepository,
+                        protocolRepository = graph.protocolRepository,
+                    ),
                 )
+                InsightsScreen(viewModel = viewModel, bottomBar = bottomBar)
             }
 
             entry<Destination.More> {
-                PlaceholderScreen(
-                    title = stringResource(R.string.nav_more),
-                    body = "Настройки, библиотека источников и выгрузка данных.",
+                LibraryScreen(
+                    onOpenPractice = { goTo(Destination.Evidence(it.id)) },
                     bottomBar = bottomBar,
                 )
             }
@@ -150,14 +154,19 @@ public fun HugMunApp(graph: AppGraph, displayTiming: DisplayTiming, modifier: Mo
             }
 
             entry<Destination.Evidence> { key ->
-                PlaceholderScreen(
-                    title = "Что об этом известно",
-                    body = "Карточка доказательности для «${key.practiceId}» появится здесь.",
-                )
+                val practice = Practice.fromId(key.practiceId)
+                if (practice == null) {
+                    PlaceholderScreen(title = "Не найдено", body = "")
+                } else {
+                    EvidenceScreen(
+                        practice = practice,
+                        onBack = { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) },
+                    )
+                }
             }
 
             entry<Destination.Library> {
-                PlaceholderScreen(title = "Источники", body = "Библиотека исследований.")
+                LibraryScreen(onOpenPractice = { goTo(Destination.Evidence(it.id)) })
             }
 
             entry<Destination.Settings> {
