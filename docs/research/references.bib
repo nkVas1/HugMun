@@ -637,3 +637,24 @@
   howpublished = {\url{https://www.nngroup.com/articles/usability-for-senior-citizens/}},
   urldate      = {2026-09-21}
 }
+
+% ---------------------------------------------------------------------------
+% Platform / engineering references
+% ---------------------------------------------------------------------------
+
+@misc{oboe,
+  author       = {{Google}},
+  title        = {Oboe: Full Guide --- low latency audio on {Android}},
+  howpublished = {\url{https://github.com/google/oboe/blob/main/docs/FullGuide.md}},
+  urldate      = {2026-09-21},
+  note         = {Callback discipline: no allocation, no locks, no blocking.
+                  Applied to the AudioTrack writer thread in :engine:audio.}
+}
+
+@misc{androidhighrefresh,
+  author       = {{Google}},
+  title        = {High refresh rate rendering on {Android}},
+  howpublished = {\url{https://android-developers.googleblog.com/2020/04/high-refresh-rate-rendering-on-android.html}},
+  urldate      = {2026-09-21},
+  note         = {setFrameRate vs preferredDisplayModeId; Choreographer wake-up offsets.}
+}
