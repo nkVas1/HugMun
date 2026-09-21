@@ -4,15 +4,13 @@
  */
 package com.hugmun.core.notifications
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.pm.PackageManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.hugmun.core.domain.DayPlan
@@ -125,12 +123,28 @@ public object HugMunNotifications {
             .apply { launchIntent?.let(::setContentIntent) }
             .build()
 
+        // Guarded by canPostNotifications above, which lint cannot follow across the
+        // call. The runCatching stays regardless: the grant can be revoked between the
+        // check and the post, and a missed reminder must never crash a background worker.
+        @SuppressLint("MissingPermission")
         runCatching {
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_PLAN, notification)
         }
     }
 
+    /**
+     * Whether a reminder can actually reach the user.
+     *
+     * [NotificationManagerCompat.areNotificationsEnabled] rather than a permission check
+     * on `POST_NOTIFICATIONS`, because that permission did not exist before API 33 and
+     * querying it below that returns *denied* — which would have silently switched
+     * reminders off for every user on Android 8 through 12 while working perfectly on
+     * the one Android 13 device this was tried on.
+     *
+     * It is also the better question. A user who has notifications turned off for the
+     * app in system settings has said no just as clearly as one who declined the
+     * dialogue, and this call covers both on every version in range.
+     */
     private fun canPostNotifications(context: Context): Boolean =
-        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-            PackageManager.PERMISSION_GRANTED
+        NotificationManagerCompat.from(context).areNotificationsEnabled()
 }
