@@ -4,6 +4,7 @@
  */
 package com.hugmun.core.designsystem.theme
 
+import android.app.Activity
 import android.provider.Settings
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.LocalTextStyle
@@ -13,12 +14,15 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 /**
  * Which palette to use.
@@ -79,6 +83,8 @@ public fun HugMunTheme(
     val reduceMotion = rememberReduceMotion()
     val motion = remember(reduceMotion) { DefaultMotion.copy(isReduced = reduceMotion) }
 
+    ApplySystemBarAppearance(isLight = colors.isLight)
+
     CompositionLocalProvider(
         LocalHugMunColors provides colors,
         LocalHugMunTypography provides HugMunType,
@@ -97,6 +103,32 @@ public fun HugMunTheme(
             ),
             content = content,
         )
+    }
+}
+
+/**
+ * Makes the status and navigation bar icons follow *this* theme.
+ *
+ * `enableEdgeToEdge()` decides icon colour from the system dark-mode setting, which is
+ * the wrong input here: HugMun defaults to its light theme regardless of what the phone
+ * is set to, and on a phone in dark mode that left white icons on warm paper — the clock
+ * and battery were genuinely unreadable. Found by looking at the app on a real device,
+ * which is exactly the class of defect no unit test was going to catch.
+ *
+ * Driving it from [HugMunColors.isLight] also means «Ритм» gets light icons when it
+ * forces the dark theme, without that screen having to know anything about system bars.
+ */
+@Composable
+private fun ApplySystemBarAppearance(isLight: Boolean) {
+    if (LocalInspectionMode.current) return
+    val view = LocalView.current
+
+    DisposableEffect(view, isLight) {
+        val window = (view.context as? Activity)?.window
+        val controller = window?.let { WindowCompat.getInsetsController(it, view) }
+        controller?.isAppearanceLightStatusBars = isLight
+        controller?.isAppearanceLightNavigationBars = isLight
+        onDispose { }
     }
 }
 

@@ -308,21 +308,42 @@ private fun SessionControls(onStop: () -> Unit, onUnwell: () -> Unit) {
 /**
  * Spoken labels for the eight positions.
  *
- * Clock positions rather than compass points: "на двенадцати часах" is the phrasing a
- * Russian speaker of this generation uses for a direction, and it needs no spatial
- * translation.
+ * Plain positional words rather than clock positions. Clock hours sit 30° apart and
+ * these targets sit 45° apart, so half of them would land on a half-hour — and an
+ * earlier version that rounded to whole hours silently gave four labels to eight
+ * targets, two of which were simply wrong. A TalkBack user would have heard the same
+ * description for two different places on the screen.
+ *
+ * Found by dumping the accessibility tree on a real device; no unit test was looking
+ * for it.
  */
-private fun directionLabel(direction: Direction): String {
-    val clock = ((direction.index * CLOCK_STEP) % CLOCK_POSITIONS).let { if (it == 0) CLOCK_POSITIONS else it }
-    return "Метка на $clock часах"
+private fun directionLabel(direction: Direction): String = DIRECTION_LABELS[direction.index]
+
+/**
+ * Clockwise from straight up, one per direction.
+ *
+ * A list rather than a `when`, so the count is checked against [Direction.COUNT] below
+ * instead of resting on a reader noticing that eight branches are present.
+ */
+private val DIRECTION_LABELS: List<String> = listOf(
+    "Метка вверху",
+    "Метка вверху справа",
+    "Метка справа",
+    "Метка внизу справа",
+    "Метка внизу",
+    "Метка внизу слева",
+    "Метка слева",
+    "Метка вверху слева",
+).also {
+    require(it.size == Direction.COUNT && it.toSet().size == Direction.COUNT) {
+        "every direction needs exactly one distinct spoken label"
+    }
 }
 
 private const val FEEDBACK_MILLIS = 550L
 private const val QUARTER_TURN = 90f
 private const val HALF_TURN = 180f
 private const val RING_RADIUS_FRACTION = 0.36f
-private const val CLOCK_STEP = 3
-private const val CLOCK_POSITIONS = 12
 private val TARGET_SIZE = 64.dp
 private val TARGET_DOT = 16.dp
 private val CENTRE_DOT = 12.dp
