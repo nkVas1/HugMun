@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Default locale: Russian.
+
+  The first deployment is for a Russian-speaking user, so Russian is the source of
+  truth rather than a translation of English. An English locale will be added under
+  values-en/ without moving anything.
+
+  House style, from docs/design/design-language.md §8:
+    * «вы», never «ты»
+    * no emoji, anywhere
+    * exclamation marks only in genuine safety copy
+    * «занятие», not «сессия»
+    * never a claim about what the app will do for this person
+-->
+<resources>
+
+    <string name="app_name">HugMun</string>
+    <string name="app_name_ru">Хугмун</string>
+
+    <!-- Navigation -->
+    <string name="nav_today">Сегодня</string>
+    <string name="nav_progress">Динамика</string>
+    <string name="nav_more">Ещё</string>
+
+    <!-- Home -->
+    <string name="home_greeting_morning">Доброе утро</string>
+    <string name="home_greeting_day">Добрый день</string>
+    <string name="home_greeting_evening">Добрый вечер</string>
+    <string name="home_greeting_night">Доброй ночи</string>
+    <string name="home_plan_title">План на сегодня</string>
+    <string name="home_nothing_due">На сегодня ничего не запланировано. Это нормально — перерыв тоже часть расписания.</string>
+    <string name="home_start">Начать</string>
+    <string name="home_minutes">%1$d мин</string>
+    <string name="home_all_done">Сегодня всё пройдено.</string>
+
+    <!-- Vigilance -->
+    <string name="vigilance_name">Зоркость</string>
+    <string name="vigilance_subtitle">Скорость обработки и распределение внимания</string>
+    <string name="vigilance_intro_title">Как это устроено</string>
+    <string name="vigilance_intro_body">В центре на короткое время появится птица — ворон или сова. Одновременно где-то по краю мелькнёт метка. Нужно запомнить обе вещи.\n\nСначала вы выберете птицу, потом покажете, где была метка. Спешить не нужно: время на ответ не ограничено. Меняется только то, насколько коротко показывают картинку.</string>
+    <string name="vigilance_intro_practice">Сначала попробуем без счёта</string>
+    <string name="vigilance_ready">Готовы?</string>
+    <string name="vigilance_begin">Начать занятие</string>
+    <string name="vigilance_question_figure">Кто был в центре?</string>
+    <string name="vigilance_question_direction">Где была метка?</string>
+    <string name="vigilance_figure_raven">Ворон</string>
+    <string name="vigilance_figure_owl">Сова</string>
+    <string name="vigilance_trial_progress">Проба %1$d</string>
+    <string name="vigilance_fixation_hint">Смотрите в центр</string>
+    <string name="vigilance_result_title">Занятие завершено</string>
+    <string name="vigilance_result_threshold">Ваш порог</string>
+    <string name="vigilance_result_unit">мс</string>
+    <string name="vigilance_result_explain">Столько времени вам хватило, чтобы правильно узнать обе картинки в трёх случаях из четырёх.</string>
+    <string name="vigilance_result_previous">В прошлый раз — %1$s мс</string>
+    <string name="vigilance_result_first">Это ваш первый замер. С ним будем сравнивать дальше.</string>
+    <string name="vigilance_result_floor">Ваш результат упёрся в возможности экрана: короче показать он не может. Настоящий порог, возможно, ещё меньше.</string>
+    <string name="vigilance_result_quality">Экран не успевал показывать картинку вовремя в части проб, поэтому к этому числу стоит относиться осторожно.</string>
+    <string name="vigilance_result_practice_note">Улучшение в самом упражнении ожидаемо и само по себе ещё не означает, что улучшились память или мышление.</string>
+
+    <!-- Session controls -->
+    <string name="session_stop">Остановить занятие</string>
+    <string name="session_pause">Пауза</string>
+    <string name="session_continue">Продолжить</string>
+    <string name="session_feel_unwell">Мне нехорошо</string>
+    <string name="session_exit_confirm_title">Закончить занятие?</string>
+    <string name="session_exit_confirm_body">Результат этой пробы не сохранится, всё остальное останется.</string>
+    <string name="session_exit_confirm_yes">Закончить</string>
+    <string name="session_exit_confirm_no">Вернуться к занятию</string>
+
+    <!-- Evidence -->
+    <string name="evidence_title">Что об этом известно</string>
+    <string name="evidence_level">Уровень доказательности</string>
+    <string name="evidence_caveat">О чём стоит помнить</string>
+    <string name="evidence_sources">Источники</string>
+
+    <!-- Common -->
+    <string name="common_back">Назад</string>
+    <string name="common_close">Закрыть</string>
+    <string name="common_next">Дальше</string>
+    <string name="common_done">Готово</string>
+    <string name="common_not_now">Не сейчас</string>
+    <string name="common_minutes_short">мин</string>
+
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      The activity theme. Deliberately bare: everything visual is Compose, and the
+      platform theme exists only to avoid a flash of the wrong colour at launch.
+    -->
+    <style name="Theme.HugMun" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/splash_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="29">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
+    </style>
+
+    <!--
+      Splash. The mark appears on warm paper rather than on a brand colour, so the first
+      thing the user sees is the same page the app is made of.
+    -->
+    <style name="Theme.HugMun.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_raven</item>
+        <item name="postSplashScreenTheme">@style/Theme.HugMun</item>
+    </style>
+
+</resources>

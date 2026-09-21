@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Only the handful of colours the platform needs before Compose starts: the splash
+  screen and the system bars. Everything else lives in :core:designsystem, where it is
+  covered by the contrast test.
+-->
+<resources>
+    <color name="splash_background">#FBF7F1</color>
+    <color name="splash_background_night">#141412</color>
+    <color name="raven_ink">#15161B</color>
+    <color name="dawn_bright">#A8481C</color>
+</resources>

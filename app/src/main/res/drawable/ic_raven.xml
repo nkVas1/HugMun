@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The raven mark, as vector path data.
+
+  Same geometry as RavenMark in :core:designsystem, kept in sync by hand because the
+  launcher icon cannot be drawn by Compose. One confident stroke; no eye, no outline,
+  no gradient.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="#D4763A"
+        android:pathData="M4,50 C11,45 16,42 23,41 C30,31 38,18 50,9 C56,5 62,3 67,3 L61,13 L66,14 L57,26 C54,31 51,36 49,41 C60,42 72,45 80,49 L97,52 L96,58 L78,58 C68,61 56,62 46,61 C48,70 50,82 48,94 L41,84 L37,90 C34,78 32,68 31,60 C22,58 12,55 4,50 Z" />
+</vector>

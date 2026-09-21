@@ -80,27 +80,62 @@ Controls:
 
 ## 4. Reliable change, not raw deltas
 
-A change is reported only when it exceeds a **Reliable Change Index** band
-[@jacobson1991rci], computed from the user's *own* within-burst variability rather than
-from a population norm we do not have.
+A change is reported only when it falls outside a band computed from the user's **own**
+recent variability. Raw deltas are never shown as if they meant something.
+
+### Why not the textbook Reliable Change Index
+
+The classic RCI [@jacobson1991rci] uses
+`S_diff = √2 · SD_norm · √(1 − r_tt)`, where `SD_norm` is the **between-person** standard
+deviation of a normative sample. It is designed for the case where you have two scores
+and a published norm.
+
+Our situation is the reverse. We have no normative sample for our own battery — stated
+plainly in §2 — but burst sampling gives us many measurements of *this* person.
+Substituting a within-person SD into the RCI formula is a category error: within-person
+SD already contains measurement error *plus* genuine day-to-day state variation, so
+multiplying it by `√(1 − r_tt)` shrinks the error term and makes the test far too eager
+to declare a change.
+
+This is not a hypothetical. The first implementation in `:core:domain` did exactly that,
+and the false-alarm simulation in `ReliableChangeTest` caught it.
+
+### What we compute instead
+
+The question our data can actually answer is: *is today's value unusual for this person,
+against their own recent spread?* That is a prediction interval for a new observation
+relative to the mean of `n` previous ones:
 
 ```
-  S_diff = √2 · SEM ,  where SEM = SD_within-person · √(1 − r_tt)
-  RCI    = (x₂ − x₁) / S_diff
+  SE_pred = SD_within · √(1 + 1/n)
+  index   = (x_new − mean) / SE_pred      ~ t(n − 1) under the null
 ```
 
-- `|RCI| < 1.96` → "в пределах вашей обычной изменчивости". This is the normal case and
-  the app says it plainly rather than drawing a dramatic slope.
-- `|RCI| ≥ 1.96` → a change worth noticing; the app **repeats the burst** before saying
-  anything.
-- Confirmed decline across two consecutive bursts → a calm prompt to talk to a doctor,
-  with no interpretation attached. See
+- The critical value is **Student's t**, not 1.96. At n = 6 the two-tailed 95 % point is
+  2.571; using the normal quantile would flag roughly twice as many stable people.
+- The sample SD uses Bessel's correction. At n = 6 the population formula understates
+  spread by about 9 %, which would narrow the band.
+- Fewer than **5** prior observations ⇒ no judgement at all. "Not enough data yet" is
+  the honest output.
+
+### What the user is told
+
+- Inside the band → «в пределах вашей обычной изменчивости». This is the normal case,
+  and the app says it plainly rather than drawing a dramatic slope.
+- Outside the band → a change worth noticing; the app **repeats the burst** before saying
+  anything further.
+- Confirmed across two consecutive bursts → a calm prompt to talk to a doctor, with no
+  interpretation attached. See
   [`03-safety-and-regulatory.md`](03-safety-and-regulatory.md) §2.3.
 
-`r_tt` is initialised from the ARC-reported reliabilities (conservatively, 0.85) and
-re-estimated from the user's own data once ≥ 5 bursts exist.
+### Verified behaviour
 
----
+Two simulations run as unit tests, because the error rates *are* the specification:
+
+| Property | Requirement | Simulation |
+| --- | --- | --- |
+| False alarms in a stable person | < 10 % | 4,000 runs, n = 6, SD = 8 |
+| Detection of a real 3-SD decline | > 60 % | 2,000 runs, n = 8 |
 
 ## 5. Training metrics vs assessment metrics
 
