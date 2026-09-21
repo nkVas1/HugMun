@@ -1,0 +1,63 @@
+# HugMun detekt configuration.
+#
+# The intent is not maximal strictness for its own sake. It is: keep the measurement
+# path obvious, keep functions small enough to reason about, and never let magic
+# numbers appear in code that produces a number a person will act on.
+
+build:
+  maxIssues: 0
+
+complexity:
+  LongMethod:
+    threshold: 45
+  LongParameterList:
+    functionThreshold: 8
+    constructorThreshold: 10
+    ignoreAnnotated: ['Composable']
+  TooManyFunctions:
+    thresholdInFiles: 30
+    thresholdInClasses: 20
+    ignoreAnnotatedFunctions: ['Composable']
+  CyclomaticComplexMethod:
+    threshold: 18
+  NestedBlockDepth:
+    threshold: 5
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
+  SwallowedException:
+    active: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Z][_A-Za-z0-9]*'
+
+style:
+  MagicNumber:
+    active: true
+    ignoreNumbers: ['-1', '0', '1', '2', '100']
+    ignoreAnnotated: ['Composable', 'Preview']
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  MaxLineLength:
+    maxLineLength: 120
+    excludeCommentStatements: true
+  ReturnCount:
+    max: 5
+  UnusedPrivateMember:
+    active: true
+  ForbiddenComment:
+    active: true
+    comments:
+      - reason: 'Ship it or file it.'
+        value: 'FIXME:'
+      - reason: 'Ship it or file it.'
+        value: 'STOPSHIP:'
+  ThrowsCount:
+    max: 3
+
+formatting:
+  active: false   # Spotless/ktlint owns formatting; detekt owns semantics.
