@@ -199,12 +199,34 @@ strongest evidence are built and tested; the rest is specified but not yet imple
 | **Компас** — risk factors | Specified; not built |
 | Onboarding, settings, data export | Not built |
 | Baseline profile, macrobenchmark | Module scaffolded; profiles not generated |
+| Русская копия в ресурсах | Partly: most screens still hold their copy as Kotlin literals |
 
-**Not yet run on a physical device.** Everything compiles, produces an installable APK,
-and the whole measurement path is covered by JVM tests against simulated observers and
-synthetic signals — but frame-timing accuracy, audio latency and PPG signal quality are
-properties of real hardware and have not been measured on any. That verification is the
-next milestone, not a formality.
+### What the first device run found
+
+Run on a Samsung SM-A127F (Exynos 850, Android 13, 720x1600, single 60.000004 Hz mode)
+on 21 September 2026. The measurement path held up: across 61 presentations the frame
+presenter discarded **one** trial for a missed frame, so frame-quantised timing works on
+a low-end phone, which was the open question the JVM tests could not answer.
+
+It also found four defects that testing on the JVM could not have found, and one that it
+could have:
+
+| Defect | Why it survived until then |
+| --- | --- |
+| Threshold reported from chance-level performance | The staircase's reversal count was the only gate, and a level pinned at the ceiling reverses forever |
+| Unreadable status bar | Icon tinting followed the system dark-mode setting; the app forces its light palette |
+| Eight direction targets, four spoken labels, all wrong | Clock hours sit 30° apart, the targets 45° apart — the one a unit test should have caught, and now does |
+| Reminders silently dropped below Android 13 | The gate checked a permission that did not exist before API 33 |
+| Every CI run had failed since the first commit | `gradlew` was committed from Windows without its executable bit |
+
+The first of those is the one that mattered. A session answered at random was shown as
+"Ваш порог — 474 мс", under the sentence "столько времени вам хватало, чтобы правильно
+узнать обе картинки примерно в трёх случаях из четырёх", to someone who had been correct
+three times in sixty. A threshold is now reported only when performance clears an exact
+binomial test against the task's 1/16 guess rate.
+
+**Still not measured on hardware:** audio output latency and PPG signal quality, because
+«Дыхание» has no camera UI yet.
 
 ## Building
 
