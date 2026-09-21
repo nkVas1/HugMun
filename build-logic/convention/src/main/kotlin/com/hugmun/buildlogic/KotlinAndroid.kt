@@ -47,9 +47,7 @@ internal fun Project.configureAndroidKotlin(extension: CommonExtension) {
             "NewerVersionAvailable",
             "AndroidGradlePluginVersion",
         )
-        xmlReport = true
-        htmlReport = true
-        sarifReport = true
+        // AGP 9 always produces XML, HTML and SARIF lint reports; the toggles are gone.
     }
 
     extension.packaging.resources.excludes += setOf(

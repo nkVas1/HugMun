@@ -1,0 +1,423 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "cb35cc7e58d0bed1037d560315b4b655",
+    "entities": [
+      {
+        "tableName": "protocol_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `enrolledOnEpochDay` INTEGER NOT NULL, `phase` TEXT NOT NULL, `sessionsCompletedInPhase` INTEGER NOT NULL, `totalSessionsCompleted` INTEGER NOT NULL, `lastSessionOnEpochDay` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "enrolledOnEpochDay",
+            "columnName": "enrolledOnEpochDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phase",
+            "columnName": "phase",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionsCompletedInPhase",
+            "columnName": "sessionsCompletedInPhase",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalSessionsCompleted",
+            "columnName": "totalSessionsCompleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSessionOnEpochDay",
+            "columnName": "lastSessionOnEpochDay",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "vigilance_session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `startedAtEpochMillis` INTEGER NOT NULL, `endedAtEpochMillis` INTEGER NOT NULL, `outcome` TEXT NOT NULL, `level` INTEGER NOT NULL, `refreshHz` REAL NOT NULL, `thresholdMillis` REAL, `thresholdFrames` REAL, `isFloorLimited` INTEGER NOT NULL, `isQualityAcceptable` INTEGER NOT NULL, `reversalsUsed` INTEGER NOT NULL, `scoredTrials` INTEGER NOT NULL, `correctTrials` INTEGER NOT NULL, `discardedTrials` INTEGER NOT NULL, `stopReason` TEXT NOT NULL, `adverseEventKind` TEXT, `adverseEventNote` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startedAtEpochMillis",
+            "columnName": "startedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endedAtEpochMillis",
+            "columnName": "endedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "outcome",
+            "columnName": "outcome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "level",
+            "columnName": "level",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "refreshHz",
+            "columnName": "refreshHz",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thresholdMillis",
+            "columnName": "thresholdMillis",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "thresholdFrames",
+            "columnName": "thresholdFrames",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "isFloorLimited",
+            "columnName": "isFloorLimited",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isQualityAcceptable",
+            "columnName": "isQualityAcceptable",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reversalsUsed",
+            "columnName": "reversalsUsed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scoredTrials",
+            "columnName": "scoredTrials",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "correctTrials",
+            "columnName": "correctTrials",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "discardedTrials",
+            "columnName": "discardedTrials",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stopReason",
+            "columnName": "stopReason",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "adverseEventKind",
+            "columnName": "adverseEventKind",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "adverseEventNote",
+            "columnName": "adverseEventNote",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vigilance_session_startedAtEpochMillis",
+            "unique": false,
+            "columnNames": [
+              "startedAtEpochMillis"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vigilance_session_startedAtEpochMillis` ON `${TABLE_NAME}` (`startedAtEpochMillis`)"
+          }
+        ]
+      },
+      {
+        "tableName": "vigilance_trial",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sessionId` INTEGER NOT NULL, `trialIndex` INTEGER NOT NULL, `centralFigure` TEXT NOT NULL, `targetDirection` INTEGER, `targetEccentricity` TEXT, `distractorCount` INTEGER NOT NULL, `stimulusFrames` INTEGER NOT NULL, `presentedMillis` REAL NOT NULL, `fixationMillis` INTEGER NOT NULL, `maskMillis` INTEGER NOT NULL, `responseFigure` TEXT, `responseDirection` INTEGER, `presentationAccurate` INTEGER NOT NULL, `latencyMillis` INTEGER NOT NULL, `outcome` TEXT NOT NULL, `isReversal` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trialIndex",
+            "columnName": "trialIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "centralFigure",
+            "columnName": "centralFigure",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "targetDirection",
+            "columnName": "targetDirection",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "targetEccentricity",
+            "columnName": "targetEccentricity",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "distractorCount",
+            "columnName": "distractorCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stimulusFrames",
+            "columnName": "stimulusFrames",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "presentedMillis",
+            "columnName": "presentedMillis",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fixationMillis",
+            "columnName": "fixationMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maskMillis",
+            "columnName": "maskMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "responseFigure",
+            "columnName": "responseFigure",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "responseDirection",
+            "columnName": "responseDirection",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "presentationAccurate",
+            "columnName": "presentationAccurate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latencyMillis",
+            "columnName": "latencyMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "outcome",
+            "columnName": "outcome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isReversal",
+            "columnName": "isReversal",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_vigilance_trial_sessionId",
+            "unique": false,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_vigilance_trial_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "safety_state",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `photosensitivityScreeningPassedAtEpochMillis` INTEGER, `photicConsentGrantedAtEpochMillis` INTEGER, `photicMinutesUsedToday` INTEGER NOT NULL, `photicUsageDayEpochDay` INTEGER, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photosensitivityScreeningPassedAtEpochMillis",
+            "columnName": "photosensitivityScreeningPassedAtEpochMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "photicConsentGrantedAtEpochMillis",
+            "columnName": "photicConsentGrantedAtEpochMillis",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "photicMinutesUsedToday",
+            "columnName": "photicMinutesUsedToday",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photicUsageDayEpochDay",
+            "columnName": "photicUsageDayEpochDay",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "practice_lock",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`practiceId` TEXT NOT NULL, `reason` TEXT NOT NULL, `lockedAtEpochMillis` INTEGER NOT NULL, PRIMARY KEY(`practiceId`))",
+        "fields": [
+          {
+            "fieldPath": "practiceId",
+            "columnName": "practiceId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reason",
+            "columnName": "reason",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lockedAtEpochMillis",
+            "columnName": "lockedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "practiceId"
+          ]
+        }
+      },
+      {
+        "tableName": "adverse_event",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `practiceId` TEXT NOT NULL, `kind` TEXT NOT NULL, `reportedAtEpochMillis` INTEGER NOT NULL, `note` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "practiceId",
+            "columnName": "practiceId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reportedAtEpochMillis",
+            "columnName": "reportedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_adverse_event_reportedAtEpochMillis",
+            "unique": false,
+            "columnNames": [
+              "reportedAtEpochMillis"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_adverse_event_reportedAtEpochMillis` ON `${TABLE_NAME}` (`reportedAtEpochMillis`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb35cc7e58d0bed1037d560315b4b655')"
+    ]
+  }
+}

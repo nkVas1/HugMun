@@ -19,12 +19,7 @@ import org.junit.Test
  */
 class ColorContrastTest {
 
-    private data class Pair(
-        val name: String,
-        val foreground: Color,
-        val background: Color,
-        val target: Double,
-    )
+    private data class Pair(val name: String, val foreground: Color, val background: Color, val target: Double)
 
     private fun pairsFor(colors: HugMunColors, theme: String): List<Pair> = listOf(
         // --- Body text: AAA ----------------------------------------------------

@@ -47,10 +47,7 @@ public class PlanTodayUseCase(
         )
     }
 
-    private fun planVigilance(
-        state: TrainingProtocol.State,
-        today: kotlinx.datetime.LocalDate,
-    ): PlannedPractice {
+    private fun planVigilance(state: TrainingProtocol.State, today: kotlinx.datetime.LocalDate): PlannedPractice {
         val plan = TrainingProtocol.plan(state, today)
         val overdue = plan.isDue && state.lastSessionOn != null && plan.dueOn < today
 

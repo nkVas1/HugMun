@@ -58,10 +58,7 @@ public fun RavenMark(
  * enough that nobody would describe the app as "the one with the bird".
  */
 @Composable
-public fun RavenWatermark(
-    modifier: Modifier = Modifier,
-    size: Dp = 180.dp,
-) {
+public fun RavenWatermark(modifier: Modifier = Modifier, size: Dp = 180.dp) {
     RavenMark(
         modifier = modifier,
         size = size,
@@ -76,11 +73,7 @@ public fun RavenWatermark(
  * Used only on the About screen, beside the Grímnismál stanza.
  */
 @Composable
-public fun RavenPair(
-    modifier: Modifier = Modifier,
-    size: Dp = 120.dp,
-    color: Color = HugMunTheme.colors.ravenInk,
-) {
+public fun RavenPair(modifier: Modifier = Modifier, size: Dp = 120.dp, color: Color = HugMunTheme.colors.ravenInk) {
     Canvas(
         modifier = modifier
             .size(size)
@@ -102,13 +95,7 @@ private fun DrawScope.drawRaven(color: Color, alpha: Float) {
     drawRavenPath(color = color, alpha = alpha, scale = size.minDimension, dx = 0f, dy = 0f)
 }
 
-private fun DrawScope.drawRavenPath(
-    color: Color,
-    alpha: Float,
-    scale: Float,
-    dx: Float,
-    dy: Float,
-) {
+private fun DrawScope.drawRavenPath(color: Color, alpha: Float, scale: Float, dx: Float, dy: Float) {
     val path = ravenPath(scale).apply { translate(Offset(dx, dy)) }
     drawPath(path = path, color = color, alpha = alpha, style = Fill)
 }

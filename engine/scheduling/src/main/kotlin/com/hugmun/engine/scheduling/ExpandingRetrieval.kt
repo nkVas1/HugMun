@@ -35,10 +35,7 @@ public object ExpandingRetrieval {
     public val LADDER_SECONDS: List<Int> = listOf(20, 45, 90, 180, 360)
 
     /** Per-item position on the ladder within the current session. */
-    public data class Rung(
-        public val index: Int = 0,
-        public val successesAtTop: Int = 0,
-    ) {
+    public data class Rung(public val index: Int = 0, public val successesAtTop: Int = 0) {
         init {
             require(index >= 0) { "index must not be negative" }
         }

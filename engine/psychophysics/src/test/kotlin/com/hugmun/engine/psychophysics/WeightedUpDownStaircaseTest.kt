@@ -4,15 +4,15 @@
  */
 package com.hugmun.engine.psychophysics
 
+import kotlin.math.abs
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.abs
-import kotlin.math.exp
-import kotlin.math.ln
-import kotlin.random.Random
 
 /**
  * These tests exist because the staircase produces the number the whole product is

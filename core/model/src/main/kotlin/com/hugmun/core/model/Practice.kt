@@ -4,9 +4,9 @@
  */
 package com.hugmun.core.model
 
-import kotlinx.datetime.LocalDate
 import kotlin.time.Duration
 import kotlin.time.Instant
+import kotlinx.datetime.LocalDate
 
 /**
  * The practices HugMun offers.

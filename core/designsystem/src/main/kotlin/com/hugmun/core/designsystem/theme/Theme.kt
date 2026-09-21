@@ -35,19 +35,24 @@ public enum class ThemePreference {
 
 public object HugMunTheme {
     public val colors: HugMunColors
-        @Composable @ReadOnlyComposable get() = LocalHugMunColors.current
+        @Composable @ReadOnlyComposable
+        get() = LocalHugMunColors.current
 
     public val type: HugMunTypography
-        @Composable @ReadOnlyComposable get() = LocalHugMunTypography.current
+        @Composable @ReadOnlyComposable
+        get() = LocalHugMunTypography.current
 
     public val dimens: HugMunDimens
-        @Composable @ReadOnlyComposable get() = LocalHugMunDimens.current
+        @Composable @ReadOnlyComposable
+        get() = LocalHugMunDimens.current
 
     public val shapes: HugMunShapes
-        @Composable @ReadOnlyComposable get() = LocalHugMunShapes.current
+        @Composable @ReadOnlyComposable
+        get() = LocalHugMunShapes.current
 
     public val motion: HugMunMotion
-        @Composable @ReadOnlyComposable get() = LocalHugMunMotion.current
+        @Composable @ReadOnlyComposable
+        get() = LocalHugMunMotion.current
 }
 
 /**
@@ -122,6 +127,7 @@ private fun rememberReduceMotion(): Boolean {
  * are the source of truth — but Material components used inside the app (dialogs,
  * sliders, switches) need a coherent scheme rather than the purple default.
  */
+@Suppress("LongMethod") // One builder call per Material role; splitting it hides the mapping.
 private fun HugMunColors.toMaterialScheme() = if (isLight) {
     lightColorScheme(
         primary = dawnBright,

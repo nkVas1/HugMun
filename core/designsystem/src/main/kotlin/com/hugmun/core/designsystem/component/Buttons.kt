@@ -8,6 +8,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable as foundationClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.hugmun.core.designsystem.theme.HugMunTheme
-import androidx.compose.foundation.clickable as foundationClickable
 
 /**
  * The primary action — the one tactile object in the interface.
@@ -213,11 +213,7 @@ public fun HugTextButton(
  * animated away, and never smaller than this.
  */
 @Composable
-public fun HugStopButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+public fun HugStopButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val colors = HugMunTheme.colors
     val dimens = HugMunTheme.dimens
 
@@ -254,47 +250,41 @@ private fun Modifier.offsetY(offset: Dp): Modifier = layout { measurable, constr
  * .shadow`, so its colour is the accent rather than neutral black. A grey shadow under a
  * terracotta control looks like dirt; a shadow tinted with the fill looks like light.
  */
-private fun Modifier.softShadow(
-    color: Color,
-    alpha: Float,
-    offsetY: Dp,
-    blur: Dp,
-    shape: CornerBasedShape,
-): Modifier = drawBehind {
-    if (alpha <= 0f) return@drawBehind
-    val blurPx = blur.toPx()
-    val steps = SHADOW_STEPS
-    for (step in 1..steps) {
-        val fraction = step / steps.toFloat()
-        val spread = blurPx * fraction
-        val stepAlpha = alpha * (1f - fraction) / steps
-        val radius = shape.topStart.toPx(size, this)
-        drawRoundRect(
-            color = color.copy(alpha = stepAlpha),
-            topLeft = androidx.compose.ui.geometry.Offset(-spread / 2f, offsetY.toPx()),
-            size = androidx.compose.ui.geometry.Size(size.width + spread, size.height),
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius + spread / 2f),
-        )
+private fun Modifier.softShadow(color: Color, alpha: Float, offsetY: Dp, blur: Dp, shape: CornerBasedShape): Modifier =
+    drawBehind {
+        if (alpha <= 0f) return@drawBehind
+        val blurPx = blur.toPx()
+        val steps = SHADOW_STEPS
+        for (step in 1..steps) {
+            val fraction = step / steps.toFloat()
+            val spread = blurPx * fraction
+            val stepAlpha = alpha * (1f - fraction) / steps
+            val radius = shape.topStart.toPx(size, this)
+            drawRoundRect(
+                color = color.copy(alpha = stepAlpha),
+                topLeft = androidx.compose.ui.geometry.Offset(-spread / 2f, offsetY.toPx()),
+                size = androidx.compose.ui.geometry.Size(size.width + spread, size.height),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius + spread / 2f),
+            )
+        }
     }
-}
 
 /** The 1 dp inner highlight along the top edge that makes the fill read as enamel. */
-private fun Modifier.enamelHighlight(enabled: Boolean, shape: CornerBasedShape): Modifier =
-    drawBehind {
-        if (!enabled) return@drawBehind
-        val radius = shape.topStart.toPx(size, this)
-        drawRoundRect(
-            brush = Brush.verticalGradient(
-                colorStops = arrayOf(
-                    0f to Color.White.copy(alpha = HIGHLIGHT_ALPHA),
-                    HIGHLIGHT_STOP to Color.Transparent,
-                ),
-                startY = 0f,
-                endY = size.height,
+private fun Modifier.enamelHighlight(enabled: Boolean, shape: CornerBasedShape): Modifier = drawBehind {
+    if (!enabled) return@drawBehind
+    val radius = shape.topStart.toPx(size, this)
+    drawRoundRect(
+        brush = Brush.verticalGradient(
+            colorStops = arrayOf(
+                0f to Color.White.copy(alpha = HIGHLIGHT_ALPHA),
+                HIGHLIGHT_STOP to Color.Transparent,
             ),
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius),
-        )
-    }
+            startY = 0f,
+            endY = size.height,
+        ),
+        cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius),
+    )
+}
 
 private val PRESS_TRAVEL = 2.dp
 private const val PRESS_DARKEN = 0.06f

@@ -3,5 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.hugmun.datastore"
+    namespace = "com.hugmun.core.datastore"
+}
+
+dependencies {
+    api(projects.core.domain)
+    implementation(projects.core.common)
+    api(libs.androidx.datastore.preferences)
 }

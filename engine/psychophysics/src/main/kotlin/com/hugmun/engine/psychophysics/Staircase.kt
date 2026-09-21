@@ -122,8 +122,7 @@ public data class ThresholdEstimate(
      * anywhere below. Sessions in this state are flagged rather than celebrated: a
      * "better" number on a faster display would not mean the person improved.
      */
-    public fun isFloorLimited(config: StaircaseConfig): Boolean =
-        frames < config.minFrames + 1.0
+    public fun isFloorLimited(config: StaircaseConfig): Boolean = frames < config.minFrames + 1.0
 }
 
 /**
@@ -147,9 +146,7 @@ public data class ThresholdEstimate(
  *
  * This class is not thread-safe; drive it from a single coroutine.
  */
-public class WeightedUpDownStaircase(
-    public val config: StaircaseConfig = StaircaseConfig(),
-) {
+public class WeightedUpDownStaircase(public val config: StaircaseConfig = StaircaseConfig()) {
     private val minLevel = log10(config.minFrames.toDouble())
     private val maxLevel = log10(config.maxFrames.toDouble())
 

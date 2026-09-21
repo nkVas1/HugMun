@@ -106,11 +106,10 @@ public class UfovSession(
         else -> StopReason.IN_PROGRESS
     }
 
-    private fun estimatedTrialMillis(spec: UfovTrialSpec, response: UfovResponse): Long =
-        spec.fixationMillis.toLong() +
-            timing.framesToMillis(spec.stimulusFrames).toLong() +
-            spec.maskMillis.toLong() +
-            response.latencyMillis
+    private fun estimatedTrialMillis(spec: UfovTrialSpec, response: UfovResponse): Long = spec.fixationMillis.toLong() +
+        timing.framesToMillis(spec.stimulusFrames).toLong() +
+        spec.maskMillis.toLong() +
+        response.latencyMillis
 
     public enum class StopReason {
         IN_PROGRESS,
@@ -133,9 +132,7 @@ public class UfovSession(
      * pure adaptive trials is our documented equivalent for the active ingredient, and it
      * is what an 83-year-old will actually finish.
      */
-    public data class SessionBudget(
-        public val maxDurationMillis: Long = DEFAULT_BUDGET_MILLIS,
-    ) {
+    public data class SessionBudget(public val maxDurationMillis: Long = DEFAULT_BUDGET_MILLIS) {
         public companion object {
             public const val DEFAULT_BUDGET_MILLIS: Long = 12L * 60L * 1_000L
         }

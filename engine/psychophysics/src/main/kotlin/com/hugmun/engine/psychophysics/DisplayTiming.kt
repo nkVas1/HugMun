@@ -18,9 +18,7 @@ import kotlin.math.roundToInt
  *
  * @property refreshHz measured refresh rate of the active display mode.
  */
-public data class DisplayTiming(
-    public val refreshHz: Double,
-) {
+public data class DisplayTiming(public val refreshHz: Double) {
     init {
         require(refreshHz > 0.0) { "refreshHz must be positive, was $refreshHz" }
     }
@@ -46,8 +44,7 @@ public data class DisplayTiming(
     /**
      * Rounds a requested duration to the nearest whole number of frames, never below one.
      */
-    public fun millisToFrames(millis: Double): Int =
-        max(1, (millis / frameMillis).roundToInt())
+    public fun millisToFrames(millis: Double): Int = max(1, (millis / frameMillis).roundToInt())
 
     /**
      * Whether this display can render a periodic stimulus at [frequencyHz] without beat

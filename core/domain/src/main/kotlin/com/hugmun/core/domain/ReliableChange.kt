@@ -102,11 +102,7 @@ public object ReliableChange {
      * @param lowerIsBetter true for the «Зоркость» threshold, where a shorter duration
      *   is the better result.
      */
-    public fun evaluate(
-        history: List<Double>,
-        latest: Double,
-        lowerIsBetter: Boolean,
-    ): Result {
+    public fun evaluate(history: List<Double>, latest: Double, lowerIsBetter: Boolean): Result {
         if (history.size < MIN_OBSERVATIONS) {
             return Result(Verdict.INSUFFICIENT_DATA, null, null, null, null, history.size)
         }
@@ -163,9 +159,9 @@ public object ReliableChange {
     internal fun studentTTwoTailed95(degreesOfFreedom: Int): Double {
         require(degreesOfFreedom >= 1) { "degrees of freedom must be at least 1" }
         return T_TABLE[degreesOfFreedom] ?: when {
-            degreesOfFreedom <= 40 -> 2.021
-            degreesOfFreedom <= 60 -> 2.000
-            degreesOfFreedom <= 120 -> 1.980
+            degreesOfFreedom <= DF_40 -> T_AT_DF_40
+            degreesOfFreedom <= DF_60 -> T_AT_DF_60
+            degreesOfFreedom <= DF_120 -> T_AT_DF_120
             else -> NORMAL_QUANTILE_95
         }
     }
@@ -173,6 +169,20 @@ public object ReliableChange {
     /** The normal two-tailed 95 % quantile, i.e. the `t` limit as df → ∞. */
     public const val NORMAL_QUANTILE_95: Double = 1.960
 
+    private const val DF_40 = 40
+    private const val DF_60 = 60
+    private const val DF_120 = 120
+    private const val T_AT_DF_40 = 2.021
+    private const val T_AT_DF_60 = 2.000
+    private const val T_AT_DF_120 = 1.980
+
+    /**
+     * Published two-tailed 95 % points of Student's t, by degrees of freedom.
+     *
+     * These are tabulated constants, not arbitrary literals: naming thirty of them would
+     * obscure the one thing a reader needs to check, which is that they match the table.
+     */
+    @Suppress("MagicNumber")
     private val T_TABLE: Map<Int, Double> = mapOf(
         1 to 12.706, 2 to 4.303, 3 to 3.182, 4 to 2.776, 5 to 2.571,
         6 to 2.447, 7 to 2.365, 8 to 2.306, 9 to 2.262, 10 to 2.228,

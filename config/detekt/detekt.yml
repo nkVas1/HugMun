@@ -1,8 +1,11 @@
 # HugMun detekt configuration.
 #
 # The intent is not maximal strictness for its own sake. It is: keep the measurement
-# path obvious, keep functions small enough to reason about, and never let magic
-# numbers appear in code that produces a number a person will act on.
+# path obvious, keep functions small enough to reason about, and never let an unexplained
+# number appear in code that produces a value a person will act on.
+#
+# Where a rule is relaxed, the reason is written down. A silently disabled rule is a
+# rule nobody can argue with later.
 
 build:
   maxIssues: 0
@@ -10,6 +13,11 @@ build:
 complexity:
   LongMethod:
     threshold: 45
+    # A Compose function is a declarative tree, not a procedure. Splitting one at 45
+    # lines produces a scatter of single-use composables that is harder to read, not
+    # easier. Complexity in composables is caught by CyclomaticComplexMethod instead,
+    # which measures branching rather than length.
+    ignoreAnnotated: ['Composable']
   LongParameterList:
     functionThreshold: 8
     constructorThreshold: 10
@@ -17,6 +25,10 @@ complexity:
   TooManyFunctions:
     thresholdInFiles: 30
     thresholdInClasses: 20
+    # Fsrs is a single cohesive model with one function per published formula. Splitting
+    # it to satisfy a count would separate equations that are meaningless apart.
+    thresholdInObjects: 20
+    thresholdInInterfaces: 20
     ignoreAnnotatedFunctions: ['Composable']
   CyclomaticComplexMethod:
     threshold: 18
@@ -34,6 +46,12 @@ naming:
     ignoreAnnotated: ['Composable']
   TopLevelPropertyNaming:
     constantPattern: '[A-Z][_A-Za-z0-9]*'
+  MatchingDeclarationName:
+    # This codebase deliberately groups closely related declarations in one file —
+    # Dimens.kt holds HugMunDimens and its default instance, Shape.kt holds HugMunShapes
+    # and DefaultShapes. Forcing a file per declaration would scatter tokens that are
+    # only meaningful together.
+    active: false
 
 style:
   MagicNumber:
@@ -42,6 +60,23 @@ style:
     ignoreAnnotated: ['Composable', 'Preview']
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
+    # Hand-drawn vector paths are coordinate lists. Naming each control point would
+    # produce forty constants that say nothing the drawing does not already say. The
+    # coordinate systems themselves (REFERENCE_BOX and the fractions) *are* named.
+    excludes:
+      - '**/RavenMark.kt'
+      - '**/StimulusField.kt'
+      # Test fixtures are literal data. A test reading
+      # `evaluate(listOf(100.0, 96.0, 104.0), latest = 103.0)` is clearer than one built
+      # from six named constants, and in these tests the numbers are the specification.
+      - '**/test/**'
+      - '**/androidTest/**'
+      # Fsrs.kt is a verbatim transcription of published equations. Its literals are the
+      # parameter subscripts (w4, w8, w17...) and the fitted default weights. Renaming
+      # them to `W_RECALL_SCALE` and friends would break the one-to-one correspondence
+      # with the specification in docs/research/04-prior-art.md, which is exactly what a
+      # reviewer needs in order to check the implementation.
+      - '**/Fsrs.kt'
   MaxLineLength:
     maxLineLength: 120
     excludeCommentStatements: true
@@ -59,5 +94,6 @@ style:
   ThrowsCount:
     max: 3
 
-formatting:
-  active: false   # Spotless/ktlint owns formatting; detekt owns semantics.
+# Formatting rules are not configured here: Spotless/ktlint owns formatting, detekt owns
+# semantics. Enabling the detekt-formatting ruleset as well would mean two tools with
+# different opinions about trailing commas.

@@ -7,6 +7,7 @@ package com.hugmun.core.designsystem.component
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable as foundationClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.hugmun.core.designsystem.theme.HugMunTheme
-import androidx.compose.foundation.clickable as foundationClickable
 
 /**
  * A card.
@@ -139,11 +139,7 @@ public fun HugScreen(
 
 /** Screen title. Marked as a heading so screen readers can jump to it. */
 @Composable
-public fun HugScreenTitle(
-    text: String,
-    modifier: Modifier = Modifier,
-    supporting: String? = null,
-) {
+public fun HugScreenTitle(text: String, modifier: Modifier = Modifier, supporting: String? = null) {
     val colors = HugMunTheme.colors
     Column(
         modifier = modifier.semantics { heading() },
@@ -158,10 +154,7 @@ public fun HugScreenTitle(
 
 /** Section heading inside a screen. */
 @Composable
-public fun HugSectionHeader(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
+public fun HugSectionHeader(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = HugMunTheme.type.titleM,

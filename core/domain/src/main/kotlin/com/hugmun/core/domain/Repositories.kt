@@ -10,9 +10,9 @@ import com.hugmun.core.model.SessionOutcome
 import com.hugmun.engine.psychophysics.CompletedTrial
 import com.hugmun.engine.psychophysics.UfovSessionResult
 import com.hugmun.engine.scheduling.TrainingProtocol
+import kotlin.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
-import kotlin.time.Instant
 
 /**
  * Ports, in the hexagonal sense.
@@ -71,7 +71,9 @@ public data class StoredVigilanceSession(
     public val isFloorLimited: Boolean,
     public val isQualityAcceptable: Boolean,
     public val scoredTrials: Int,
+    public val correctTrials: Int,
     public val discardedTrials: Int,
+    public val reversalsUsed: Int,
     public val accuracy: Double,
 )
 

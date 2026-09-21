@@ -6,6 +6,7 @@ package com.hugmun.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable as foundationClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.hugmun.core.designsystem.theme.HugMunTheme
 import com.hugmun.core.model.EvidenceCard
 import com.hugmun.core.model.EvidenceTier
-import androidx.compose.foundation.clickable as foundationClickable
 
 /**
  * The evidence badge.
@@ -182,11 +182,7 @@ private fun CitationRow(text: String, summary: String, onClick: (() -> Unit)?) {
  * mean your memory improved".
  */
 @Composable
-public fun HugNote(
-    text: String,
-    modifier: Modifier = Modifier,
-    tone: NoteTone = NoteTone.Neutral,
-) {
+public fun HugNote(text: String, modifier: Modifier = Modifier, tone: NoteTone = NoteTone.Neutral) {
     val colors = HugMunTheme.colors
     val dimens = HugMunTheme.dimens
 

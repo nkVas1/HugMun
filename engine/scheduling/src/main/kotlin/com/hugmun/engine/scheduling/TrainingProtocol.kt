@@ -222,9 +222,8 @@ public object TrainingProtocol {
      * This drives one of the few genuinely encouraging messages in the app, because it is
      * one of the few we can honestly justify.
      */
-    public fun hasCompletedABoosterBlock(state: State): Boolean =
-        state.phase.ordinal > Phase.BOOSTER_ONE.ordinal ||
-            (state.phase == Phase.BOOSTER_ONE && state.sessionsCompletedInPhase >= BOOSTER_SESSIONS)
+    public fun hasCompletedABoosterBlock(state: State): Boolean = state.phase.ordinal > Phase.BOOSTER_ONE.ordinal ||
+        (state.phase == Phase.BOOSTER_ONE && state.sessionsCompletedInPhase >= BOOSTER_SESSIONS)
 
     // --- Phase transitions ---------------------------------------------------------
 

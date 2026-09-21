@@ -17,6 +17,8 @@ ksp = "2.3.12"
 androidCompileSdk = "37"
 androidTargetSdk = "36"
 androidMinSdk = "26"
+# Macrobenchmark requires API 28+ for the profiling hooks it relies on.
+androidBenchmarkMinSdk = "28"
 jvmToolchain = "21"
 
 # --- AndroidX ----------------------------------------------------------------

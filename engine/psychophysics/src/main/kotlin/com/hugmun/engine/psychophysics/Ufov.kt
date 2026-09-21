@@ -53,10 +53,15 @@ public enum class UfovLevel(
 /**
  * The central figure, as a two-alternative forced choice.
  *
- * A raven and an owl rather than the car and truck of the original: the discrimination is
- * equally coarse at short durations, and it carries the one thread of the project's
- * mythology into the place the user looks most. Both silhouettes are matched for area and
- * mean luminance so the choice cannot be made on brightness alone.
+ * A raven and an owl rather than the car and truck of the original. The discrimination is
+ * equally coarse at short durations — wide-horizontal against compact-upright, which is
+ * what survives a 25 ms presentation — and it carries the project's one mythological
+ * thread into the place the user looks most.
+ *
+ * Both are drawn into the same square at the same nominal size, so overall extent carries
+ * no information. Their filled areas are close but not photometrically matched; that
+ * difference is constant across trials and is therefore not something the staircase can
+ * move on, but exact luminance matching remains an open item rather than a claim.
  */
 public enum class CentralFigure {
     RAVEN,
@@ -71,10 +76,21 @@ public enum class CentralFigure {
  * than a 12-minute session allows.
  */
 public enum class Eccentricity(public val normalisedRadius: Float) {
-    NEAR(0.36f),
-    MID(0.63f),
-    FAR(0.88f),
+    NEAR(NEAR_RADIUS),
+    MID(MID_RADIUS),
+    FAR(FAR_RADIUS),
 }
+
+/**
+ * Ring radii as a fraction of the usable field.
+ *
+ * Spaced so the three rings are about equally discriminable rather than equally spaced
+ * in distance: peripheral acuity falls off faster than linearly, so equal steps in
+ * radius would make the outer ring disproportionately harder.
+ */
+private const val NEAR_RADIUS = 0.36f
+private const val MID_RADIUS = 0.63f
+private const val FAR_RADIUS = 0.88f
 
 /** One of eight radial directions, 45° apart, numbered clockwise from straight up. */
 @JvmInline
@@ -95,10 +111,7 @@ public value class Direction(public val index: Int) {
 }
 
 /** A marker placed in the periphery. */
-public data class PeripheralMarker(
-    public val direction: Direction,
-    public val eccentricity: Eccentricity,
-)
+public data class PeripheralMarker(public val direction: Direction, public val eccentricity: Eccentricity)
 
 /**
  * Everything the renderer needs to present one trial, and everything the analysis needs

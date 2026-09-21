@@ -13,7 +13,6 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += setOf("ru", "en")
     }
 
     buildTypes {
@@ -33,7 +32,10 @@ android {
     }
 
     androidResources {
+        // Generated from res/resources.properties, which declares Russian as the locale
+        // the unqualified values/ folder is written in.
         generateLocaleConfig = true
+        localeFilters += setOf("ru")
     }
 
     buildFeatures {

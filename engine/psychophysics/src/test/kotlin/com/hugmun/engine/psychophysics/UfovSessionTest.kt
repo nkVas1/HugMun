@@ -4,16 +4,16 @@
  */
 package com.hugmun.engine.psychophysics
 
+import kotlin.math.abs
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.abs
-import kotlin.math.exp
-import kotlin.math.ln
-import kotlin.random.Random
 
 class UfovTrialGeneratorTest {
 
@@ -215,7 +215,11 @@ class UfovSessionTest {
             session.record(
                 UfovResponse(
                     figure = if (correct) spec.centralFigure else other(spec.centralFigure),
-                    direction = if (correct) spec.target?.direction else Direction((spec.target!!.direction.index + 1) % Direction.COUNT),
+                    direction = if (correct) {
+                        spec.target?.direction
+                    } else {
+                        Direction((spec.target!!.direction.index + 1) % Direction.COUNT)
+                    },
                     presentationAccurate = accurate,
                     latencyMillis = 1_200,
                 ),

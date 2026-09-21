@@ -4,11 +4,11 @@
  */
 package com.hugmun.core.common
 
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 /**
  * Time as a dependency.
@@ -25,9 +25,7 @@ public interface TimeSource {
 }
 
 /** The real clock. */
-public class SystemTimeSource(
-    private val clock: Clock = Clock.System,
-) : TimeSource {
+public class SystemTimeSource(private val clock: Clock = Clock.System) : TimeSource {
     override fun now(): Instant = clock.now()
     override fun timeZone(): TimeZone = TimeZone.currentSystemDefault()
 }

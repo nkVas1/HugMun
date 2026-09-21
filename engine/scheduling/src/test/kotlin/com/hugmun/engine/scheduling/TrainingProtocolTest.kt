@@ -32,7 +32,11 @@ class TrainingProtocolTest {
         for (phase in listOf(TrainingProtocol.Phase.BOOSTER_ONE, TrainingProtocol.Phase.BOOSTER_TWO)) {
             val spec = TrainingProtocol.specFor(phase)
             assertEquals(TrainingProtocol.PhaseLength.Sessions(4), spec.length)
-            assertEquals("$phase must be marked as coming from the trial", TrainingProtocol.Provenance.TRIAL, spec.provenance)
+            assertEquals(
+                "$phase must be marked as coming from the trial",
+                TrainingProtocol.Provenance.TRIAL,
+                spec.provenance,
+            )
         }
     }
 
@@ -142,7 +146,10 @@ class TrainingProtocolTest {
         assertEquals("booster 2 must deliver four sessions", 4, boosterTwoSessions)
         assertTrue("booster 1 must have been visited", TrainingProtocol.Phase.BOOSTER_ONE in phasesVisited)
         assertTrue("booster 2 must have been visited", TrainingProtocol.Phase.BOOSTER_TWO in phasesVisited)
-        assertTrue("the protocol must recognise a completed booster block", TrainingProtocol.hasCompletedABoosterBlock(state))
+        assertTrue(
+            "the protocol must recognise a completed booster block",
+            TrainingProtocol.hasCompletedABoosterBlock(state),
+        )
     }
 
     @Test

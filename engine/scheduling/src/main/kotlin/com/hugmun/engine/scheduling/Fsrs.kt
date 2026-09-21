@@ -152,10 +152,7 @@ public object Fsrs {
     }
 
     /** Memory state after the very first review of an item. */
-    public fun initialState(
-        grade: Grade,
-        parameters: Parameters = DEFAULT_PARAMETERS,
-    ): MemoryState = MemoryState(
+    public fun initialState(grade: Grade, parameters: Parameters = DEFAULT_PARAMETERS): MemoryState = MemoryState(
         stabilityDays = clampStability(parameters[grade.value - 1]),
         difficulty = clampDifficulty(initialDifficulty(grade, parameters)),
         reviewCount = 1,
@@ -210,11 +207,7 @@ public object Fsrs {
      * @param cueLevel 0 = answer was on screen, 3 = no cue at all.
      * @param latencyMillis time from prompt to response.
      */
-    public fun gradeFor(
-        recalledUnaided: Boolean,
-        cueLevel: Int,
-        latencyMillis: Long,
-    ): Grade = when {
+    public fun gradeFor(recalledUnaided: Boolean, cueLevel: Int, latencyMillis: Long): Grade = when {
         !recalledUnaided -> Grade.AGAIN
         cueLevel <= CUE_LEVEL_ASSISTED -> Grade.HARD
         latencyMillis <= FAST_RESPONSE_MILLIS -> Grade.EASY
@@ -226,8 +219,7 @@ public object Fsrs {
 
     private fun decayFactor(decay: Double): Double = NINETY_PERCENT.pow(-1.0 / decay) - 1.0
 
-    private fun initialDifficulty(grade: Grade, p: Parameters): Double =
-        p[4] - exp(p[5] * (grade.value - 1)) + 1.0
+    private fun initialDifficulty(grade: Grade, p: Parameters): Double = p[4] - exp(p[5] * (grade.value - 1)) + 1.0
 
     private fun nextDifficulty(current: Double, grade: Grade, p: Parameters): Double {
         val delta = -p[6] * (grade.value - GOOD_GRADE)
@@ -274,11 +266,9 @@ public object Fsrs {
     private fun shortTermStability(stability: Double, grade: Grade, p: Parameters): Double =
         stability * exp(p[17] * (grade.value - GOOD_GRADE + p[18])) * stability.pow(-p[19])
 
-    private fun clampStability(value: Double): Double =
-        value.coerceIn(MIN_STABILITY_DAYS, MAX_STABILITY_DAYS)
+    private fun clampStability(value: Double): Double = value.coerceIn(MIN_STABILITY_DAYS, MAX_STABILITY_DAYS)
 
-    private fun clampDifficulty(value: Double): Double =
-        value.coerceIn(MIN_DIFFICULTY, MAX_DIFFICULTY)
+    private fun clampDifficulty(value: Double): Double = value.coerceIn(MIN_DIFFICULTY, MAX_DIFFICULTY)
 
     /** Natural-log helper kept for readability in tests. */
     internal fun lnSafe(value: Double): Double = ln(value.coerceAtLeast(MIN_STABILITY_DAYS))

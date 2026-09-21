@@ -4,15 +4,15 @@
  */
 package com.hugmun.core.domain
 
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.math.sqrt
+import kotlin.random.Random
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.math.cos
-import kotlin.math.ln
-import kotlin.math.sqrt
-import kotlin.random.Random
 
 /**
  * The most ethically loaded arithmetic in the project.

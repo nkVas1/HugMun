@@ -14,14 +14,18 @@ plugins {
     alias(libs.plugins.spotless)
 }
 
+// Literal rather than `libs.plugins.spotless.get().pluginId`: ktlint's chain-method rule
+// splits that three-link chain across five lines, which is worse than the string.
+val ktlintVersion: String = libs.versions.ktlint.get()
+
 allprojects {
-    apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
+    apply(plugin = "com.diffplug.spotless")
 
     spotless {
         kotlin {
             target("src/**/*.kt")
             targetExclude("**/build/**")
-            ktlint(rootProject.libs.versions.ktlint.get())
+            ktlint(ktlintVersion)
                 .editorConfigOverride(
                     mapOf(
                         "ktlint_standard_function-naming" to "disabled",
@@ -34,14 +38,11 @@ allprojects {
         }
         kotlinGradle {
             target("*.gradle.kts")
-            ktlint(rootProject.libs.versions.ktlint.get())
+            ktlint(ktlintVersion)
         }
-        format("misc") {
-            target("**/*.md", "**/*.yml", "**/*.yaml", "**/.gitignore")
-            targetExclude("**/build/**", "**/.gradle/**")
-            trimTrailingWhitespace()
-            endWithNewline()
-        }
+        // No `format("misc")` block: Spotless 7.0.2's generic formatter is not
+        // configuration-cache compatible under Gradle 9, and .editorconfig already
+        // covers whitespace in Markdown and YAML for every editor that matters.
     }
 }
 

@@ -22,7 +22,7 @@ public class AndroidRoomConventionPlugin : Plugin<Project> {
         }
 
         dependencies {
-            add("implementation", library("androidx-room3-runtime"))
+            add("api", library("androidx-room3-runtime"))
             add("implementation", library("androidx-sqlite-bundled"))
             add("ksp", library("androidx-room3-compiler"))
             add("testImplementation", library("androidx-room3-testing"))
