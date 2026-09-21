@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cb35cc7e58d0bed1037d560315b4b655",
+    "identityHash": "c88d354a2a56c4ee08bbfe871d59396f",
     "entities": [
       {
         "tableName": "protocol_state",
@@ -294,6 +294,210 @@
         ]
       },
       {
+        "tableName": "anchor_item",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `kind` TEXT NOT NULL, `prompt` TEXT NOT NULL, `answer` TEXT NOT NULL, `photoPath` TEXT, `note` TEXT, `stabilityDays` REAL, `difficulty` REAL, `reviewCount` INTEGER NOT NULL, `lapseCount` INTEGER NOT NULL, `cueLevel` INTEGER NOT NULL, `dueOnEpochDay` INTEGER NOT NULL, `createdAtEpochMillis` INTEGER NOT NULL, `isArchived` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kind",
+            "columnName": "kind",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prompt",
+            "columnName": "prompt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answer",
+            "columnName": "answer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoPath",
+            "columnName": "photoPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stabilityDays",
+            "columnName": "stabilityDays",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "difficulty",
+            "columnName": "difficulty",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "reviewCount",
+            "columnName": "reviewCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lapseCount",
+            "columnName": "lapseCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cueLevel",
+            "columnName": "cueLevel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dueOnEpochDay",
+            "columnName": "dueOnEpochDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtEpochMillis",
+            "columnName": "createdAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isArchived",
+            "columnName": "isArchived",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_anchor_item_dueOnEpochDay",
+            "unique": false,
+            "columnNames": [
+              "dueOnEpochDay"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anchor_item_dueOnEpochDay` ON `${TABLE_NAME}` (`dueOnEpochDay`)"
+          },
+          {
+            "name": "index_anchor_item_kind",
+            "unique": false,
+            "columnNames": [
+              "kind"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anchor_item_kind` ON `${TABLE_NAME}` (`kind`)"
+          }
+        ]
+      },
+      {
+        "tableName": "anchor_review",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `itemId` INTEGER NOT NULL, `reviewedAtEpochMillis` INTEGER NOT NULL, `cueLevel` INTEGER NOT NULL, `recalledUnaided` INTEGER NOT NULL, `latencyMillis` INTEGER NOT NULL, `grade` INTEGER NOT NULL, `stabilityAfterDays` REAL NOT NULL, `difficultyAfter` REAL NOT NULL, `intervalDays` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "itemId",
+            "columnName": "itemId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reviewedAtEpochMillis",
+            "columnName": "reviewedAtEpochMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cueLevel",
+            "columnName": "cueLevel",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recalledUnaided",
+            "columnName": "recalledUnaided",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latencyMillis",
+            "columnName": "latencyMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grade",
+            "columnName": "grade",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stabilityAfterDays",
+            "columnName": "stabilityAfterDays",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "difficultyAfter",
+            "columnName": "difficultyAfter",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "intervalDays",
+            "columnName": "intervalDays",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_anchor_review_itemId",
+            "unique": false,
+            "columnNames": [
+              "itemId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anchor_review_itemId` ON `${TABLE_NAME}` (`itemId`)"
+          },
+          {
+            "name": "index_anchor_review_reviewedAtEpochMillis",
+            "unique": false,
+            "columnNames": [
+              "reviewedAtEpochMillis"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anchor_review_reviewedAtEpochMillis` ON `${TABLE_NAME}` (`reviewedAtEpochMillis`)"
+          }
+        ]
+      },
+      {
         "tableName": "safety_state",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `photosensitivityScreeningPassedAtEpochMillis` INTEGER, `photicConsentGrantedAtEpochMillis` INTEGER, `photicMinutesUsedToday` INTEGER NOT NULL, `photicUsageDayEpochDay` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
@@ -417,7 +621,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb35cc7e58d0bed1037d560315b4b655')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c88d354a2a56c4ee08bbfe871d59396f')"
     ]
   }
 }

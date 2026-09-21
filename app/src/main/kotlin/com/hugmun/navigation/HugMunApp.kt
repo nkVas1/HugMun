@@ -29,6 +29,10 @@ import com.hugmun.core.designsystem.theme.HugMunTheme
 import com.hugmun.core.model.Practice
 import com.hugmun.di.AppGraph
 import com.hugmun.engine.psychophysics.DisplayTiming
+import com.hugmun.feature.anchor.AnchorAddScreen
+import com.hugmun.feature.anchor.AnchorListScreen
+import com.hugmun.feature.anchor.AnchorReviewScreen
+import com.hugmun.feature.anchor.AnchorViewModel
 import com.hugmun.feature.home.HomeScreen
 import com.hugmun.feature.home.HomeViewModel
 import com.hugmun.feature.insights.InsightsScreen
@@ -109,10 +113,16 @@ public fun HugMunApp(
                 HomeScreen(
                     viewModel = viewModel,
                     onEnrolled = onRequestNotificationPermission,
-                    onStartPractice = { goTo(Destination.VigilanceIntro) },
+                    onStartPractice = { practice ->
+                        when (practice) {
+                            Practice.ANCHOR -> goTo(Destination.AnchorList)
+                            else -> goTo(Destination.VigilanceIntro)
+                        }
+                    },
                     onOpenOptional = { practice ->
                         when (practice) {
                             Practice.RHYTHM -> goTo(Destination.RhythmIntro)
+                            Practice.ANCHOR -> goTo(Destination.AnchorList)
                             else -> goTo(Destination.Evidence(practice.id))
                         }
                     },
@@ -163,6 +173,29 @@ public fun HugMunApp(
                         backStack.add(Destination.Today)
                         backStack.add(Destination.VigilanceResult(sessionId ?: 0L))
                     },
+                )
+            }
+
+            entry<Destination.AnchorList> {
+                AnchorListScreen(
+                    viewModel = anchorViewModel(graph),
+                    onStartReview = { goTo(Destination.AnchorReview) },
+                    onAdd = { goTo(Destination.AnchorAdd) },
+                    onOpenEvidence = { goTo(Destination.Evidence(Practice.ANCHOR.id)) },
+                )
+            }
+
+            entry<Destination.AnchorAdd> {
+                AnchorAddScreen(
+                    viewModel = anchorViewModel(graph),
+                    onDone = { backStack.removeAt(backStack.lastIndex) },
+                )
+            }
+
+            entry<Destination.AnchorReview> {
+                AnchorReviewScreen(
+                    viewModel = anchorViewModel(graph),
+                    onFinished = { backStack.removeAt(backStack.lastIndex) },
                 )
             }
 
@@ -274,6 +307,18 @@ private fun VigilanceResultRoute(graph: AppGraph, onDone: () -> Unit) {
         Box(modifier = Modifier.fillMaxSize())
     }
 }
+
+/** One ViewModel shared across the «Якорь» flow, so the list and the review agree. */
+@Composable
+private fun anchorViewModel(graph: AppGraph): AnchorViewModel = viewModel(
+    key = "anchor",
+    factory = AnchorViewModel.Factory(
+        repository = graph.anchorRepository,
+        reviewItem = graph.reviewAnchorItem,
+        buildPrompt = graph.buildAnchorPrompt,
+        timeSource = graph.timeSource,
+    ),
+)
 
 /**
  * One ViewModel shared across the «Ритм» flow.

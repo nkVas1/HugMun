@@ -12,14 +12,18 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.hugmun.core.common.AppDispatchers
 import com.hugmun.core.common.SystemTimeSource
 import com.hugmun.core.common.TimeSource
+import com.hugmun.core.data.AnchorRepositoryImpl
 import com.hugmun.core.data.ProtocolRepositoryImpl
 import com.hugmun.core.data.SafetyRepositoryImpl
 import com.hugmun.core.data.VigilanceRepositoryImpl
 import com.hugmun.core.database.HugMunDatabase
 import com.hugmun.core.datastore.PreferencesRepositoryImpl
+import com.hugmun.core.domain.AnchorRepository
+import com.hugmun.core.domain.BuildAnchorPromptUseCase
 import com.hugmun.core.domain.PlanTodayUseCase
 import com.hugmun.core.domain.PreferencesRepository
 import com.hugmun.core.domain.ProtocolRepository
+import com.hugmun.core.domain.ReviewAnchorItemUseCase
 import com.hugmun.core.domain.SafetyRepository
 import com.hugmun.core.domain.VigilanceRepository
 import com.hugmun.core.notifications.ReminderScheduler
@@ -78,6 +82,10 @@ public class AppGraph(private val context: Context, public val dispatchers: AppD
         SafetyRepositoryImpl(database.safetyDao(), dispatchers, timeSource)
     }
 
+    public val anchorRepository: AnchorRepository by lazy {
+        AnchorRepositoryImpl(database.anchorDao(), dispatchers)
+    }
+
     public val preferencesRepository: PreferencesRepository by lazy {
         PreferencesRepositoryImpl(preferencesStore)
     }
@@ -85,7 +93,15 @@ public class AppGraph(private val context: Context, public val dispatchers: AppD
     // --- Use cases ----------------------------------------------------------------
 
     public val planToday: PlanTodayUseCase by lazy {
-        PlanTodayUseCase(protocolRepository, safetyRepository, timeSource)
+        PlanTodayUseCase(protocolRepository, safetyRepository, anchorRepository, timeSource)
+    }
+
+    public val reviewAnchorItem: ReviewAnchorItemUseCase by lazy {
+        ReviewAnchorItemUseCase(anchorRepository, timeSource)
+    }
+
+    public val buildAnchorPrompt: BuildAnchorPromptUseCase by lazy {
+        BuildAnchorPromptUseCase(anchorRepository)
     }
 
     // --- Reminders ----------------------------------------------------------------

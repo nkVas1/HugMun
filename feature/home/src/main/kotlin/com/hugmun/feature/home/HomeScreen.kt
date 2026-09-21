@@ -223,6 +223,19 @@ private fun OptionalPractices(onOpen: (Practice) -> Unit) {
 
     HugSectionHeader(text = "Можно сделать дополнительно")
 
+    HugCard(onClick = { onOpen(Practice.ANCHOR) }) {
+        Text(
+            text = Practice.ANCHOR.displayName,
+            style = HugMunTheme.type.titleM,
+            color = colors.ink,
+        )
+        Text(
+            text = "Записать что-то важное или посмотреть, что уже записано.",
+            style = HugMunTheme.type.bodyM,
+            color = colors.inkMuted,
+        )
+    }
+
     HugCard(onClick = { onOpen(Practice.RHYTHM) }) {
         Row(
             modifier = Modifier.fillMaxWidth(),

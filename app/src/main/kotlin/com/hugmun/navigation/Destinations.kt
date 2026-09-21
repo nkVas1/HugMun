@@ -46,6 +46,18 @@ public sealed interface Destination : NavKey {
     @Serializable
     public data class VigilanceResult(public val sessionId: Long) : Destination
 
+    // --- «Якорь» --------------------------------------------------------------------
+
+    /** The list of things the user is holding on to. */
+    @Serializable
+    public data object AnchorList : Destination
+
+    @Serializable
+    public data object AnchorAdd : Destination
+
+    @Serializable
+    public data object AnchorReview : Destination
+
     // --- «Ритм» ---------------------------------------------------------------------
 
     /** Explains the practice, its evidence tier and why the light may be unavailable. */
