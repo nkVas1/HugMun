@@ -1,0 +1,48 @@
+name: Evidence or protocol change
+description: Propose changing a dose, a schedule, an evidence tier, or a cited claim.
+title: "[evidence] "
+labels: [evidence, research]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Protocol parameters in this project are supposed to trace to a source. If you
+        think one is wrong, this is the right place — please bring the citation.
+  - type: input
+    id: target
+    attributes:
+      label: What should change
+      placeholder: e.g. «Зоркость» booster spacing, or the tier for «Ритм»
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: What the dossier currently says
+      description: Quote the relevant part of docs/research and link to it.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: What it should say instead, and why
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: |
+        DOIs or verified links. Please state the study design, the population and the
+        effect size, not just the conclusion.
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Does this change what ships?
+      options:
+        - 'No — documentation only'
+        - 'Yes — needs an ADR'
+    validations:
+      required: true

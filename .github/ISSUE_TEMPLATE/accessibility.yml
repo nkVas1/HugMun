@@ -1,0 +1,39 @@
+name: Accessibility problem
+description: Something is hard or impossible to use.
+labels: [accessibility, priority-high]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accessibility defects are treated as correctness defects here, not as polish.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Text too small, or clipped at a large system font size
+        - Insufficient contrast
+        - Touch target too small or too close to another
+        - Screen reader (TalkBack) problem
+        - Motion or animation problem
+        - A gesture with no visible button equivalent
+        - A timeout in the interface
+        - Colour used as the only signal
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: input
+    id: settings
+    attributes:
+      label: Relevant system settings
+      placeholder: e.g. font size 200%, TalkBack on, remove animations on
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version

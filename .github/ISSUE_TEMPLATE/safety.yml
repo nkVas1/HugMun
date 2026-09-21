@@ -1,0 +1,58 @@
+name: Safety defect
+description: A safety control did not work, or a claim overstates the evidence.
+title: "[safety] "
+labels: [safety, priority-high]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Safety defects are the highest-priority class of bug in this project.
+
+        **If you were physically unwell after using the app, please speak to a doctor
+        first.** This form is for the software defect.
+
+        If this is a security vulnerability, use private reporting instead.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which safeguard
+      options:
+        - Photosensitivity screening or consent gate
+        - 40 Hz visual channel behaviour (intensity, ramp, area, colour)
+        - Abort control did not stop output immediately
+        - Daily cap not enforced
+        - Display refresh gate (channel available on a 60/90 Hz screen)
+        - Adverse-event report did not lock the practice
+        - A claim that overstates the evidence
+        - Something outside «Ритм» flashes more than three times per second
+        - Breathing or movement safety instruction
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected the safeguard to do, and what it did instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: e.g. Pixel 7a, Android 16
+  - type: input
+    id: refresh
+    attributes:
+      label: Display refresh rate, if known
+      placeholder: e.g. 90 Hz
+  - type: input
+    id: version
+    attributes:
+      label: App version

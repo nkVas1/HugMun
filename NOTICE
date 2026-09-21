@@ -4,7 +4,41 @@ Copyright 2026 HugMun Project Contributors
 This product includes software developed by the HugMun Project
 (https://github.com/nkVas1/HugMun).
 
-HugMun is a general-wellness application for cognitive training and
-sensory neuromodulation. It is NOT a medical device, and it does not
-diagnose, treat, cure, mitigate or prevent any disease.
-See SAFETY.md for the full safety statement.
+HugMun is a general-wellness application for cognitive training and sensory
+neuromodulation. It is NOT a medical device, and it does not diagnose, treat,
+cure, mitigate or prevent any disease. See SAFETY.md for the full statement.
+
+--------------------------------------------------------------------------------
+Third-party works
+--------------------------------------------------------------------------------
+
+Golos Text
+  Copyright 2019 The Golos Text Project Authors
+  https://github.com/googlefonts/golos-text
+  SIL Open Font License 1.1 — see third_party/fonts/OFL-GolosText.txt
+  Bundled as core/designsystem/src/main/res/font/golos_text_variable.ttf
+
+Literata
+  Copyright 2017 The Literata Project Authors
+  https://github.com/googlefonts/literata
+  SIL Open Font License 1.1 — see third_party/fonts/OFL-Literata.txt
+  Bundled as core/designsystem/src/main/res/font/literata_variable.ttf
+
+FSRS (Free Spaced Repetition Scheduler)
+  Algorithm and default parameters by the Open Spaced Repetition community
+  https://github.com/open-spaced-repetition
+  HugMun contains an independent implementation of FSRS-6, written from the
+  published specification and adapted for this population; see
+  engine/scheduling/src/main/kotlin/com/hugmun/engine/scheduling/Fsrs.kt and
+  docs/adr/0005-reimplement-fsrs.md. No code was copied. Attribution is given
+  because the algorithm is their work.
+
+--------------------------------------------------------------------------------
+Scientific sources
+--------------------------------------------------------------------------------
+
+The protocols implemented here are derived from published research, cited in
+docs/research/references.bib. The trials and reviews referenced are the work of
+their respective authors; HugMun implements protocols inspired by them and makes
+no claim of affiliation with, or endorsement by, any of the cited investigators
+or institutions.
