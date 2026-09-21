@@ -9,7 +9,6 @@ import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTimestamp
 import android.media.AudioTrack
-import android.os.Build
 import kotlin.coroutines.coroutineContext
 import kotlin.math.min
 import kotlinx.coroutines.CoroutineDispatcher
@@ -97,11 +96,10 @@ public class GammaStimulusPlayer(
             )
             .setTransferMode(AudioTrack.MODE_STREAM)
             .setBufferSizeInBytes(bufferSize)
-            .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY)
-                }
-            }
+            // Unconditional: PERFORMANCE_MODE_LOW_LATENCY arrived in API 26, which is
+            // this project's minimum. Low latency is not needed for a 40 Hz modulation
+            // (see the README), but a shorter buffer makes the ramp smoother.
+            .setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY)
             .build()
 
         synth.reset()

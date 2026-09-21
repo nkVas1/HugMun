@@ -12,11 +12,16 @@
     * exclamation marks only in genuine safety copy
     * «занятие», not «сессия»
     * never a claim about what the app will do for this person
+
+  KNOWN GAP, being closed: most of these are not read by anything yet. The Compose
+  screens still hold their copy as Kotlin literals, so this file and the screens are
+  two sources of truth and have already drifted apart in wording. Until the migration
+  lands, UnusedResources is suppressed here rather than the strings deleted — deleting
+  them would hide the gap instead of tracking it.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
 
     <string name="app_name">HugMun</string>
-    <string name="app_name_ru">Хугмун</string>
 
     <!-- Navigation -->
     <string name="nav_today">Сегодня</string>

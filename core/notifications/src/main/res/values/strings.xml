@@ -5,5 +5,4 @@
 
     <string name="notification_plan_title">Сегодня есть занятие</string>
     <string name="notification_plan_body_single">%1$s — около %2$d минут</string>
-    <string name="notification_plan_action">Открыть</string>
 </resources>

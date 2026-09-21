@@ -3,10 +3,12 @@
   Only the handful of colours the platform needs before Compose starts: the splash
   screen and the system bars. Everything else lives in :core:designsystem, where it is
   covered by the contrast test.
+
+  There is deliberately no night variant of the splash background. The app renders in
+  its light palette regardless of the system setting, so a dark splash would hand over
+  to a light first frame and flash — and a flash is the one thing this product should
+  never do.
 -->
 <resources>
     <color name="splash_background">#FBF7F1</color>
-    <color name="splash_background_night">#141412</color>
-    <color name="raven_ink">#15161B</color>
-    <color name="dawn_bright">#A8481C</color>
 </resources>
