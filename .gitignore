@@ -1,0 +1,49 @@
+# --- Gradle ---
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!build-logic/
+build-logic/build/
+
+# --- Android ---
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+out/
+release/
+captures/
+.externalNativeBuild/
+.cxx/
+lint-results*.html
+lint-results*.xml
+
+# --- Keystores & secrets (never commit) ---
+*.jks
+*.keystore
+keystore.properties
+signing.properties
+google-services.json
+secrets.properties
+
+# --- IDE ---
+.idea/*
+!.idea/icon.png
+*.iml
+.kotlin/
+*.hprof
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Reports & scratch ---
+/reports/
+/scratch/
+/design-archive/scratch/
+*.log
