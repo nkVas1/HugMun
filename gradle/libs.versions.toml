@@ -34,7 +34,7 @@ androidxNavigation3 = "1.1.7"
 androidxProfileinstaller = "1.4.1"
 androidxRoom3 = "3.0.3"
 androidxSqlite = "2.7.1"
-androidxWork = "2.11.2"
+androidxWork = "2.12.0"
 
 # --- Kotlin ecosystem --------------------------------------------------------
 kotlinxCoroutines = "1.11.0"
