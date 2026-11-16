@@ -39,7 +39,7 @@ androidxWork = "2.11.2"
 # --- Kotlin ecosystem --------------------------------------------------------
 kotlinxCoroutines = "1.11.0"
 kotlinxDatetime = "0.8.0"
-kotlinxSerialization = "1.11.0"
+kotlinxSerialization = "1.13.0"
 
 # --- Quality -----------------------------------------------------------------
 detekt = "1.23.8"
